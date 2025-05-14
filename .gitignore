@@ -1,0 +1,31 @@
+# Python-specific ignores
+__pycache__/
+*.pyc
+*.pyo
+dist/
+build/
+eggs/
+*.egg-info/
+.venv/
+venv/
+instance/
+*.log
+
+# IDE and editor specific ignores
+.idea/
+*.swp
+*~
+tmp/
+*.bak
+*.orig
+
+# OS-specific ignores
+.DS_Store
+Thumbs.db
+
+# Package and distribution ignores
+*.tar.gz
+*.zip
+
+# Miscellaneous ignores
+.env
