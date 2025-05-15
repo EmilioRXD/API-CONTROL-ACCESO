@@ -29,6 +29,7 @@ def validar_acceso_tarjeta(validacion: ValidacionTarjeta, db: Session = Depends(
             )
             db.add(registro)
             db.commit()
+            db.refresh(registro)
         
         return RespuestaValidacion(
             acceso_permitido=False,
@@ -48,6 +49,7 @@ def validar_acceso_tarjeta(validacion: ValidacionTarjeta, db: Session = Depends(
             )
             db.add(registro)
             db.commit()
+            db.refresh(registro)
         
         return RespuestaValidacion(
             acceso_permitido=False,
@@ -67,6 +69,7 @@ def validar_acceso_tarjeta(validacion: ValidacionTarjeta, db: Session = Depends(
             )
             db.add(registro)
             db.commit()
+            db.refresh(registro)
         
         return RespuestaValidacion(
             acceso_permitido=False,
@@ -136,6 +139,7 @@ def validar_acceso_tarjeta(validacion: ValidacionTarjeta, db: Session = Depends(
             )
             db.add(registro)
             db.commit()
+            db.refresh(registro)
         
         return RespuestaValidacion(
             acceso_permitido=False,
@@ -173,6 +177,7 @@ def validar_acceso_tarjeta(validacion: ValidacionTarjeta, db: Session = Depends(
     )
     db.add(registro)
     db.commit()
+    db.refresh(registro)
     
     # Obtener información del estudiante para incluir en el mensaje
     estudiante = db.query(Estudiante).filter(Estudiante.cedula == estudiante_cedula).first()

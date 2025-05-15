@@ -211,6 +211,7 @@ class TokenData(BaseModel):
 class ValidacionTarjeta(BaseModel):
     serial: str
     mac_controlador: str
+    cedula_estudiante: int
 
 class RespuestaValidacion(BaseModel):
     acceso_permitido: bool
