@@ -9,6 +9,7 @@
 #define MQTT_PORT 2005
 
 
+//cambiar a ip de computadora y puerto donde se aloja el api
 String server_ip = "http://192.168.1.7:8000/";
 
 enum Mode {
@@ -42,7 +43,10 @@ void setup() {
   Serial.begin(115200);
   EEPROM.begin(EEPROM_SIZE);
   pinMode(LED, OUTPUT);
-  //borrarCredenciales();
+
+  if (checkConnectionPins(15, 0)) {
+    borrarCredenciales();
+    }
 
   InitCardReader();
 

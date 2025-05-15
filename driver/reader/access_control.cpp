@@ -22,6 +22,26 @@ byte buffer_block_size = 18; //tamaño del bloque de memoria de la tarjeta.
 byte block_data_read[18];    //array para leer los datos guardados en el bloque de memoria de la tarjeta.
 
 
+bool checkConnectionPins(int pin1, int pin2) {
+  // Set pin1 as OUTPUT and pin2 as INPUT with PULLDOWN
+  pinMode(pin1, OUTPUT);
+  pinMode(pin2, INPUT_PULLDOWN);
+  
+  // Test HIGH signal
+  digitalWrite(pin1, HIGH);
+  delayMicroseconds(10); // Short delay for stabilization
+  bool highRead = digitalRead(pin2);
+  
+  // Test LOW signal
+  digitalWrite(pin1, LOW);
+  delayMicroseconds(10);
+  bool lowRead = digitalRead(pin2);
+  
+  // If pin2 follows pin1's state, they are connected
+  return (highRead == HIGH && lowRead == LOW);
+}
+
+
 bool authenticate_keyA() {
   if (mfrc.PCD_Authenticate(0x60, block_address, &key, &(mfrc.uid)) != 0) {
     Serial.println("[ERROR]: Key A Authentication failed.");

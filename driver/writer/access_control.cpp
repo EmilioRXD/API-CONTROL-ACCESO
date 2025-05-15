@@ -1,15 +1,17 @@
 #include <cstdint>
 #include "access_control.h"
+#include "web_portal.h"
 #include <MFRC522v2.h>
 #include <MFRC522DriverSPI.h>
 #include <MFRC522DriverPinSimple.h>
 #include <MFRC522Debug.h>
 #include <WiFi.h>
+#include <ArduinoJson.h>
 #include <PubSubClient.h>
 
-
-String      SERVER_IP        = "192.168.1.7";
-uint16_t    SERVER_MQTT_PORT = 2005;
+//cambiar a ip de computadora de jesus.
+String      SERVER_IP        = "192.168.0.109";
+uint16_t    SERVER_MQTT_PORT = 1883;
 
 
 //Lector de Tarjetas-
@@ -35,20 +37,39 @@ WiFiClient wifi_client;
 PubSubClient client(wifi_client);
 
 
+bool checkConnectionPins(int pin1, int pin2) {
+  // Set pin1 as OUTPUT and pin2 as INPUT with PULLDOWN
+  pinMode(pin1, OUTPUT);
+  pinMode(pin2, INPUT_PULLDOWN);
+  
+  // Test HIGH signal
+  digitalWrite(pin1, HIGH);
+  delayMicroseconds(10); // Short delay for stabilization
+  bool highRead = digitalRead(pin2);
+  
+  // Test LOW signal
+  digitalWrite(pin1, LOW);
+  delayMicroseconds(10);
+  bool lowRead = digitalRead(pin2);
+  
+  // If pin2 follows pin1's state, they are connected
+  return (highRead == HIGH && lowRead == LOW);
+}
+
+
+
 
 void msg_callback(char* topic, byte* message, unsigned int length) {
   cedula = "";
   JsonDocument doc;
 
-  deserializejson(doc, (char *)message);
+  deserializeJson(doc, (char *)message);
 
   for (int i = 0; i < length; i++) {
     Serial.print((char)message[i]);
-    cedula += (char)message[i];
   }
 
-  cedula = doc["student_id"];
-
+  cedula = String(doc["student_id"]);
   Serial.println();
   Serial.print("Cedula: "); Serial.println(cedula);
 }
@@ -64,7 +85,7 @@ String Cedula() {
 
 void reconnect() {
   while (!client.connected()) {
-    Serial.println("[INFO] Conectando a server MQTT...");
+    //Serial.println("[INFO] Conectando a server MQTT...");
 
     if (client.connect("EmisorTarjetas")) {
       Serial.println("[OK] Conectado correctamente a server MQTT.");
@@ -73,8 +94,10 @@ void reconnect() {
       client.subscribe(topico.c_str());
     }
     else {
-      Serial.print("[ERROR] Conexion MQTT fallida, rc= "); Serial.print(client.state());
-      Serial.println(" Intentando de nuevo en 3 segundos");
+      //Serial.print("[ERROR] Conexion MQTT fallida, rc= "); Serial.print(client.state());
+      //Serial.println(" Intentando de nuevo en 3 segundos");
+      Serial.print(". ");
+      Serial.println(client.state());
       delay(3000);
 
     }
@@ -146,7 +169,6 @@ int8_t WriteCard(String value) {
 
   Serial.println("[OK] Datos escritos correctamente en la tarjeta");
   return 0;
-  
 
 }
 
@@ -176,7 +198,7 @@ void printActualUID() {
 }
 
 String GetActualUID() {
-  return String((char *)actual_uid.integer);
+  return String(actual_uid.integer);
 }
 
 

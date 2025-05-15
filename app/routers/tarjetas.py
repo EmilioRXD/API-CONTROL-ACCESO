@@ -14,8 +14,8 @@ from app.utils.mqtt_service import get_mqtt_service
 
 # Cargar variables de entorno
 load_dotenv()
-MQTT_BROKER_HOST = os.getenv("MQTT_BROKER_HOST", "localhost")
-MQTT_BROKER_PORT = int(os.getenv("MQTT_BROKER_PORT", "1883"))
+MQTT_BROKER_HOST = "0.0.0.0"
+MQTT_BROKER_PORT = 1883
 MQTT_TIMEOUT = int(os.getenv("MQTT_TIMEOUT", "30"))
 
 router = APIRouter(
@@ -141,7 +141,7 @@ async def crear_tarjeta(
         
         status = response_data.get("status")
         serial = response_data.get("serial")
-        student_id = response_data.get("student_id")
+        student_id = response_data.get("cedula_estudiante")
         
         if status == "success" and serial and str(student_id) == str(asignacion.estudiante_cedula):
             # Registrar la nueva tarjeta en la base de datos

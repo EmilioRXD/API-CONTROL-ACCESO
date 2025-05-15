@@ -6,14 +6,16 @@
  
 #define LED 2
 #define EEPROM_SIZE 512
-#define MQTT_PORT 2005
+#define MQTT_PORT 1883
 
 
-String server_ip = "http://192.168.1.7:8000";
+
 
 enum Mode {
   MODE_CONFIG,
   MODE_READER,
+  MODE_WRITER,
+  MODE_SENDER,
   MODE_NONE
 };
 
@@ -42,12 +44,16 @@ void setup() {
   Serial.begin(115200);
   EEPROM.begin(EEPROM_SIZE);
   pinMode(LED, OUTPUT);
+
+  if (checkConnectionPins(15, 0)) {
   borrarCredenciales();
+  }
 
   InitCardReader();
 
   bool result = tryConnect();
   if (result) {
+  Serial.println(GetMacAddress());
     ConnectMQTT();
     driver_mode = MODE_READER;
   }
@@ -85,6 +91,7 @@ void loop() {
     serializeJson(doc, jsonResponse); 
 
     SendDataMQTT(jsonResponse.c_str());
+    Serial.println("Datos Enviados.");
 
     BorrarCedula();
     delay(2000);

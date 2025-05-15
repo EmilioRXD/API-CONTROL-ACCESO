@@ -1,0 +1,8 @@
+MAC ESP32 Jesser:
+    B4:E6:2D:C5:8C:E9
+
+! en el codigo tanto del escritor como del lector
+  se entra en modo configuracion si los pines 15 y 0 estan conectados
+  
+  
+  
