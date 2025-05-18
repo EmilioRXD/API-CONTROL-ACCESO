@@ -13,28 +13,40 @@ logger = logging.getLogger(__name__)
 load_dotenv()
 
 # Log the environment variables
-logger.info(f"Loaded environment variables: {os.environ}")
+logger.info("Environment variables:")
+logger.info(f"DATABASE_URL: {os.getenv('DATABASE_URL')}")
+logger.info(f"DATABASE_HOST: {os.getenv('DATABASE_HOST')}")
+logger.info(f"DATABASE_PORT: {os.getenv('DATABASE_PORT')}")
+logger.info(f"DATABASE_USER: {os.getenv('DATABASE_USER')}")
+logger.info(f"DATABASE_PASSWORD: {os.getenv('DATABASE_PASSWORD')}")
+logger.info(f"DATABASE_NAME: {os.getenv('DATABASE_NAME')}")
 
-# MySQL Database Configuration
-DATABASE_HOST = os.getenv("DATABASE_HOST", "localhost")
-DATABASE_PORT = os.getenv("DATABASE_PORT", "8000")  # Changed to default MySQL port
-DATABASE_USER = os.getenv("DATABASE_USER", "root")
-DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD", "")  # Empty string for local development
-DATABASE_NAME = os.getenv("DATABASE_NAME", "control_acceso")
 
 # Build the connection string with connection pool settings
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = f"mysql+pymysql://{os.getenv('DATABASE_USER', 'control_user')}:{os.getenv('DATABASE_PASSWORD', 'control_password')}@mysql:3306/{os.getenv('DATABASE_NAME', 'control_acceso')}"
+
 
 logger.info(f"Attempting to connect to database at: {DATABASE_URL}")
 
 # Configure engine with connection pool settings
 engine = create_engine(
     DATABASE_URL,
+    echo=True,
     pool_size=5,
     max_overflow=10,
     pool_timeout=30,
-    pool_recycle=1800  # Recycle connections after 30 minutes
+    pool_recycle=1800,  # Recycle connections after 30 minutes
+    connect_args={"connect_timeout": 10}  # Add connection timeout
 )
+
+# Test the connection
+try:
+    with engine.connect() as connection:
+        logger.info("Successfully connected to database")
+        result = connection.execute("SELECT 1").fetchone()
+        logger.info(f"Test query result: {result}")
+except Exception as e:
+    logger.error(f"Failed to connect to database: {str(e)}")
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

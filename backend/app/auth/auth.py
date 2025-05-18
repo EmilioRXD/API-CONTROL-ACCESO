@@ -15,9 +15,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Configuración de JWT
-SECRET_KEY = os.getenv("JWT_SECRET")
-ALGORITHM = os.getenv("JWT_ALGORITHM")
-JWT_EXPIRATION_MINUTES = os.getenv("JWT_EXPIRATION_MINUTES")
+SECRET_KEY = os.getenv("JWT_SECRET", "jwt_secret")
+ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
+JWT_EXPIRATION_MINUTES = os.getenv("JWT_EXPIRATION_MINUTES", 30)
 
 # Configuración de hash de contraseñas
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

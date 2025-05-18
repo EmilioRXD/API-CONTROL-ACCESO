@@ -14,8 +14,8 @@ from app.utils.mqtt_service import get_mqtt_service
 
 # Cargar variables de entorno
 load_dotenv()
-MQTT_BROKER_HOST = "0.0.0.0"
-MQTT_BROKER_PORT = 1883
+MQTT_BROKER_HOST = os.getenv("MQTT_HOST", "mqtt")
+MQTT_BROKER_PORT = int(os.getenv("MQTT_PORT", "1883"))
 MQTT_TIMEOUT = int(os.getenv("MQTT_TIMEOUT", "30"))
 
 router = APIRouter(
