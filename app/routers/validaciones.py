@@ -18,19 +18,8 @@ def validar_acceso_tarjeta(validacion: ValidacionTarjeta, db: Session = Depends(
     # Obtener la tarjeta por su serial
     tarjeta = db.query(Tarjeta).filter(Tarjeta.serial == validacion.serial).first()
     if not tarjeta:
-        # Registrar intento fallido
-        controlador = db.query(Controlador).filter(Controlador.mac == validacion.mac_controlador).first()
-        if controlador:
-            registro = Registro(
-                id_tarjeta=0,  # ID inválido para representar tarjeta desconocida
-                id_controlador=controlador.id,
-                fecha_hora=datetime.now(),
-                acceso_permitido=False
-            )
-            db.add(registro)
-            db.commit()
-            db.refresh(registro)
-        
+        # No intentamos registrar en la base de datos para tarjetas desconocidas
+        # ya que no hay un id_tarjeta válido para referenciar
         return RespuestaValidacion(
             acceso_permitido=False,
             mensaje="Tarjeta no encontrada en el sistema"

@@ -8,16 +8,16 @@ from app.auth.auth import get_current_active_user
 
 router = APIRouter(
     prefix="/controladores",
-    tags=["controladores"],
-    dependencies=[Depends(get_current_active_user)]
+    tags=["controladores"]
 )
 
-@router.get("/", response_model=List[Controlador])
+@router.get("/", response_model=List[Controlador], dependencies=[Depends(get_current_active_user)])
 def listar_controladores(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     controladores = db.query(ControladorModel).offset(skip).limit(limit).all()
     return controladores
 
-@router.post("/", response_model=Controlador, status_code=status.HTTP_201_CREATED)
+# Endpoint para crear controlador sin autenticación
+@router.post("/", response_model=Controlador, status_code=status.HTTP_201_CREATED, dependencies=[])
 def crear_controlador(controlador: ControladorCreate, db: Session = Depends(get_db)):
     # Verificar si ya existe un controlador con esa MAC
     db_controlador_existente = db.query(ControladorModel).filter(ControladorModel.mac == controlador.mac).first()
@@ -35,21 +35,21 @@ def crear_controlador(controlador: ControladorCreate, db: Session = Depends(get_
     db.refresh(db_controlador)
     return db_controlador
 
-@router.get("/{controlador_id}", response_model=Controlador)
+@router.get("/{controlador_id}", response_model=Controlador, dependencies=[Depends(get_current_active_user)])
 def obtener_controlador(controlador_id: int, db: Session = Depends(get_db)):
     db_controlador = db.query(ControladorModel).filter(ControladorModel.id == controlador_id).first()
     if db_controlador is None:
         raise HTTPException(status_code=404, detail="Controlador no encontrado")
     return db_controlador
 
-@router.get("/mac/{mac}", response_model=Controlador)
+@router.get("/mac/{mac}", response_model=Controlador, dependencies=[Depends(get_current_active_user)])
 def obtener_controlador_por_mac(mac: str, db: Session = Depends(get_db)):
     db_controlador = db.query(ControladorModel).filter(ControladorModel.mac == mac).first()
     if db_controlador is None:
         raise HTTPException(status_code=404, detail="Controlador no encontrado")
     return db_controlador
 
-@router.put("/{controlador_id}", response_model=Controlador)
+@router.put("/{controlador_id}", response_model=Controlador, dependencies=[Depends(get_current_active_user)])
 def actualizar_controlador(controlador_id: int, controlador: ControladorCreate, db: Session = Depends(get_db)):
     db_controlador = db.query(ControladorModel).filter(ControladorModel.id == controlador_id).first()
     if db_controlador is None:
@@ -73,7 +73,7 @@ def actualizar_controlador(controlador_id: int, controlador: ControladorCreate, 
     db.refresh(db_controlador)
     return db_controlador
 
-@router.delete("/{controlador_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{controlador_id}", status_code=status.HTTP_204_NO_CONTENT, dependencies=[Depends(get_current_active_user)])
 def eliminar_controlador(controlador_id: int, db: Session = Depends(get_db)):
     db_controlador = db.query(ControladorModel).filter(ControladorModel.id == controlador_id).first()
     if db_controlador is None:
