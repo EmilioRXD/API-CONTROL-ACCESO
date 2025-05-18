@@ -1,0 +1,441 @@
+/**
+ * controladores.css
+ * Estilos para la página de gestión de controladores del sistema de control de acceso
+ */
+
+@import 'variables.css';
+
+/* Contenedor principal */
+.controller-container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 160px); /* Altura total menos el header y padding */
+    overflow: hidden;
+    padding: var(--spacing-md);
+    background-color: var(--color-bg-primary);
+    border-radius: var(--border-radius-lg);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Barra de búsqueda */
+.search-container {
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.search-input-wrapper {
+    position: relative;
+    flex: 1;
+}
+
+.search-input-wrapper i {
+    position: absolute;
+    left: var(--spacing-sm);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-secondary);
+}
+
+.search-input {
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-sm) var(--spacing-sm) 35px;
+    border: 1px solid var(--color-bg-tertiary);
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-size-sm);
+}
+
+.advanced-filters-btn {
+    background-color: var(--color-bg-secondary);
+    border: 1px solid var(--color-bg-tertiary);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-sm) var(--spacing-md);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+
+.advanced-filters-btn:hover {
+    background-color: var(--color-bg-tertiary);
+}
+
+.advanced-filters-btn.active {
+    background-color: var(--color-secondary);
+    color: var(--color-text-light);
+    border-color: var(--color-secondary);
+}
+
+/* Filtros rápidos (chips) */
+.controller-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-lg);
+}
+
+.filter-button {
+    background-color: var(--color-bg-secondary);
+    border-radius: var(--border-radius-xl);
+    padding: 6px 12px;
+    font-size: var(--font-size-xs);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    border: 1px solid var(--color-bg-tertiary);
+}
+
+.filter-button.active {
+    background-color: var(--color-secondary);
+    color: var(--color-text-light);
+    border-color: var(--color-secondary);
+}
+
+/* Grid de tarjetas de controladores */
+.controllers-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--spacing-md);
+    overflow-y: auto;
+    margin-bottom: var(--spacing-md);
+    padding-right: var(--spacing-xs);
+    padding-bottom: var(--spacing-md); /* Espacio adicional al final */
+}
+
+/* Tarjeta de controlador */
+.controller-card {
+    background-color: var(--color-bg-primary);
+    border-radius: var(--border-radius-md);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    overflow: visible; /* Cambiado a visible para garantizar que todo el contenido se muestre */
+    transition: box-shadow var(--transition-fast);
+    display: flex;
+    min-height: 180px; /* Mínimo en lugar de altura fija */
+    height: auto; /* Permite que la altura se ajuste al contenido */
+    border: 1px solid var(--color-bg-tertiary);
+    position: relative;
+}
+
+.controller-card:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Contenedor del icono */
+.controller-icon-container {
+    width: 120px;
+    background-color: var(--color-bg-secondary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-right: 1px solid var(--color-bg-tertiary);
+}
+
+.controller-icon {
+    font-size: 64px;
+    color: var(--color-secondary);
+}
+
+/* Información del controlador */
+.controller-info {
+    flex: 1;
+    padding: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    overflow: visible; /* Garantiza que el contenido desbordado sea visible */
+}
+
+/* Contenedor del título y botón de editar */
+.location-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.controller-location {
+    margin: 0;
+    font-size: var(--font-size-lg);
+    color: var(--color-text-primary);
+    font-weight: 600;
+    white-space: nowrap; /* Evita que el texto se envuelva */
+    overflow: hidden; /* Oculta el contenido desbordado */
+    text-overflow: ellipsis; /* Muestra puntos suspensivos cuando el texto es truncado */
+    flex: 1; /* Toma todo el espacio disponible */
+}
+
+/* Lista de detalles */
+.controller-details {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--spacing-md) 0;
+    flex: 1;
+}
+
+.controller-details li {
+    margin-bottom: var(--spacing-xs);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.detail-label {
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    width: 100px;
+}
+
+.controller-mac {
+    font-family: monospace;
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-lg);
+    padding-left: 1px;
+}
+
+/* Acciones de la tarjeta */
+.controller-card-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing-xs);
+    margin-top: auto;
+}
+
+/* Botón de editar controlador */
+.edit-controller-btn {
+    border-radius: 0; /* Sin bordes redondeados */
+    background-color: transparent;
+    color: var(--color-text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    margin-left: var(--spacing-sm); /* Espacio entre el título y el botón */
+    flex-shrink: 0; /* Evita que el botón se comprima */
+    font-size: var(--font-size-lg);
+}
+
+.edit-controller-btn:hover {
+    color: var(--color-secondary);
+}
+
+.card-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--border-radius-circle);
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    color: var(--color-text-secondary);
+    background-color: var(--color-bg-secondary);
+}
+
+.card-action-btn:hover {
+    background-color: var(--color-bg-tertiary);
+}
+
+.card-action-btn:nth-child(1):hover {
+    background-color: var(--color-info-light);
+    color: var(--color-info);
+}
+
+.card-action-btn:nth-child(2):hover {
+    background-color: var(--color-secondary-light);
+    color: var(--color-secondary);
+}
+
+.card-action-btn:nth-child(3):hover {
+    background-color: var(--color-warning-light);
+    color: var(--color-warning);
+}
+
+/* Badges para función y tipo de acceso */
+.badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    text-align: center;
+    min-width: 80px;
+}
+
+.badge-reader {
+    background-color: var(--color-info-light);
+    color: var(--color-info);
+    border: 1px solid var(--color-info);
+}
+
+.badge-writer {
+    background-color: var(--color-warning-light);
+    color: var(--color-warning);
+    border: 1px solid var(--color-warning);
+}
+
+.badge-entry {
+    background-color: var(--color-success-light);
+    color: var(--color-success);
+    border: 1px solid var(--color-success);
+}
+
+.badge-exit {
+    background-color: var(--color-pending-light);
+    color: var(--color-pending);
+    border: 1px solid var(--color-pending);
+}
+
+.badge-na {
+    background-color: var(--color-bg-tertiary);
+    color: var(--color-text-secondary);
+    border: 1px solid var(--color-text-secondary);
+}
+
+/* Indicador de estado */
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: var(--font-size-xs);
+}
+
+.status-indicator::before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.status-indicator.online::before {
+    background-color: var(--color-success);
+}
+
+.status-indicator.offline::before {
+    background-color: var(--color-danger);
+}
+
+.status-indicator.maintenance::before {
+    background-color: var(--color-warning);
+}
+
+/* Botones de acción */
+.actions-cell {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--border-radius-circle);
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    color: var(--color-text-secondary);
+    background-color: var(--color-bg-secondary);
+}
+
+.action-btn:hover {
+    background-color: var(--color-bg-tertiary);
+}
+
+.edit-btn:hover {
+    background-color: var(--color-info-light);
+    color: var(--color-info);
+}
+
+.info-btn:hover {
+    background-color: var(--color-secondary-light);
+    color: var(--color-secondary);
+}
+
+.config-btn:hover {
+    background-color: var(--color-warning-light);
+    color: var(--color-warning);
+}
+
+/* Botón de agregar */
+.add-controller-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: var(--spacing-sm);
+}
+
+.add-controller-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    background-color: var(--color-secondary);
+    color: var(--color-text-light);
+    border: none;
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+
+.add-controller-btn:hover {
+    background-color: var(--color-primary);
+}
+
+/* Media queries */
+@media (max-width: 992px) {
+    .controllers-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+    
+    .controller-card {
+        min-height: 200px; /* Mayor altura mínima para pantallas medianas */
+    }
+}
+
+@media (max-width: 768px) {
+    .search-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .controller-filters {
+        overflow-x: auto;
+        padding-bottom: var(--spacing-xs);
+        flex-wrap: nowrap;
+    }
+    
+    .add-controller-btn span {
+        display: none;
+    }
+    
+    .add-controller-btn {
+        padding: var(--spacing-sm);
+        border-radius: var(--border-radius-circle);
+    }
+    
+    .controllers-grid {
+        grid-template-columns: 1fr; /* Una sola columna en móviles */
+    }
+    
+    .controller-card {
+        height: auto;
+        min-height: 180px;
+    }
+    
+    .controller-icon-container {
+        width: 100px; /* Icono más pequeño en móviles */
+    }
+    
+    .controller-icon {
+        font-size: 48px; /* Icono más pequeño en móviles */
+    }
+}
+
+/* Fix para color secundario con transparencia */
+:root {
+    --color-secondary-light: rgba(41, 45, 107, 0.1);
+}

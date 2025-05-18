@@ -1,0 +1,426 @@
+/**
+ * tarjetas.css
+ * Estilos adicionales para la página de tarjetas del sistema de control de acceso
+ */
+
+@import 'variables.css';
+
+/* Contenedor principal y scroll */
+.accordion-container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 100px); /* Altura total menos el header */
+    overflow: hidden;
+    padding: var(--spacing-md);
+}
+
+.accordion {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: var(--spacing-sm); /* Espacio para el scrollbar */
+    scrollbar-width: thin; /* Para Firefox */
+    scrollbar-color: var(--color-bg-tertiary) transparent; /* Para Firefox */
+}
+
+/* Estilo para scrollbar en Chrome/Safari/Edge */
+.accordion::-webkit-scrollbar {
+    width: 8px;
+}
+
+.accordion::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.accordion::-webkit-scrollbar-thumb {
+    background-color: var(--color-bg-tertiary);
+    border-radius: 20px;
+}
+
+.accordion::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-text-secondary);
+}
+
+/* Barra de búsqueda */
+.search-container {
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.search-input-wrapper {
+    position: relative;
+    flex: 1;
+}
+
+.search-input-wrapper i {
+    position: absolute;
+    left: var(--spacing-sm);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-secondary);
+}
+
+.search-input {
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-sm) var(--spacing-sm) 35px;
+    border: 1px solid var(--color-bg-tertiary);
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-size-sm);
+}
+
+.advanced-filters-btn {
+    background-color: var(--color-bg-secondary);
+    border: 1px solid var(--color-bg-tertiary);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-sm) var(--spacing-md);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+
+.advanced-filters-btn:hover {
+    background-color: var(--color-bg-tertiary);
+}
+
+.advanced-filters-btn.active {
+    background-color: var(--color-secondary);
+    color: var(--color-text-light);
+    border-color: var(--color-secondary);
+}
+
+/* Panel de filtros avanzados */
+.advanced-filters-panel {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out, padding 0.3s ease-in-out, margin-bottom 0.3s ease-in-out;
+}
+
+.advanced-filters-panel.show {
+    max-height: 1000px; /* Valor suficientemente grande para acomodar contenido futuro */
+    opacity: 1;
+    margin-bottom: var(--spacing-lg);
+}
+
+.filter-group {
+    margin-bottom: var(--spacing-md);
+}
+
+.filter-group h4 {
+    margin: 0 0 var(--spacing-sm) 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+}
+
+.filter-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}
+
+.filter-options label {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+}
+
+.filter-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-sm);
+}
+
+.apply-filters-btn, .reset-filters-btn {
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-radius: var(--border-radius-sm);
+    border: none;
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+}
+
+.apply-filters-btn {
+    background-color: var(--color-info);
+    color: var(--color-text-light);
+}
+
+.reset-filters-btn {
+    background-color: var(--color-text-secondary);
+    color: var(--color-text-light);
+}
+
+/* Filtros rápidos (chips) */
+.accordion-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-lg);
+}
+
+.filter-button {
+    background-color: var(--color-bg-secondary);
+    border-radius: var(--border-radius-xl);
+    padding: 6px 12px;
+    font-size: var(--font-size-xs);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    border: 1px solid var(--color-bg-tertiary);
+}
+
+.filter-button.active {
+    background-color: var(--color-secondary);
+    color: var(--color-text-light);
+    border-color: var(--color-secondary);
+}
+
+.filter-button.payment-pending {
+    border-color: var(--color-pending);
+}
+
+.filter-button.payment-pending.active {
+    background-color: var(--color-pending);
+    border-color: var(--color-pending);
+    color: var(--color-text-light);
+}
+
+/* Contador de resultados */
+.results-counter {
+    margin-bottom: var(--spacing-md);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+}
+
+/* Acordeón - Sobrescribir solo lo necesario */
+.accordion-item.payment-pending {
+    border-left: 4px solid var(--color-pending);
+}
+
+.payment-status {
+    font-size: var(--font-size-xs);
+    background-color: var(--color-pending);
+    color: var(--color-text-light);
+    padding: 3px var(--spacing-xs);
+    border-radius: var(--border-radius-xl);
+}
+
+/* Estilos específicos para tarjetas */
+.payment-pending {
+    color: var(--color-pending);
+}
+
+/* Estilos para los indicadores de estado */
+.status-container {
+    display: flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius-xl);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    margin-right: var(--spacing-sm);
+    white-space: nowrap;
+}
+
+.status-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+}
+
+/* Estilos para tarjetas activas */
+.status-entrada-container {
+    background-color: rgba(40, 199, 111, 0.15);
+    color: var(--color-success);
+}
+
+.status-indicator.status-entrada {
+    background-color: var(--color-success);
+}
+
+/* Estilos para tarjetas inactivas */
+.status-denegado-container {
+    background-color: rgba(225, 29, 72, 0.15);
+    color: var(--color-danger);
+}
+
+.status-indicator.status-denegado {
+    background-color: var(--color-danger);
+}
+
+/* Estilos para tarjetas con pago pendiente */
+.payment-pending .status-denegado-container {
+    background-color: rgba(255, 159, 67, 0.15);
+    color: var(--color-pending);
+}
+
+.payment-pending .status-indicator.status-denegado {
+    background-color: var(--color-pending);
+}
+
+/* Paginación */
+.pagination-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--spacing-xl);
+    flex-wrap: wrap;
+}
+
+.pagination-info {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    font-weight: 500;
+    padding: var(--spacing-xs) var(--spacing-sm);
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    background-color: var(--color-bg-primary);
+    padding: var(--spacing-xs) var(--spacing-sm);
+}
+
+.pagination-btn {
+    background: var(--color-bg-primary);
+    border: none;
+    border-radius: var(--border-radius-xl);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-primary);
+    transition: all 0.2s ease-in-out;
+    height: 36px;
+    width: 36px;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background-color: var(--color-bg-tertiary);
+    transform: translateY(-1px);
+}
+
+.pagination-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.pagination-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.pagination-pages {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.page-number {
+    background: var(--color-bg-primary);
+    border: none;
+    border-radius: var(--border-radius-xl);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    min-width: 36px;
+    height: 36px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    font-weight: 500;
+    color: var(--color-text-primary);
+}
+
+.page-number:hover:not(.active) {
+    background-color: var(--color-bg-tertiary);
+    transform: translateY(-1px);
+}
+
+.page-number.active {
+    background-color: var(--color-secondary);
+    color: var(--color-text-light);
+    box-shadow: 0 2px 5px rgba(0, 123, 255, 0.2);
+}
+
+.page-ellipsis {
+    padding: 0 var(--spacing-xs);
+    color: var(--color-text-secondary);
+}
+
+.items-per-page {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+}
+
+.items-per-page label {
+    font-weight: 500;
+    color: var(--color-text-secondary);
+}
+
+.items-per-page select {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: none;
+    background-color: var(--color-bg-secondary);
+    border-radius: var(--border-radius-lg);
+    color: var(--color-text-primary);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    padding-right: 28px;
+}
+
+.items-per-page select:hover {
+    background-color: var(--color-bg-tertiary);
+}
+
+/* Mensaje de no resultados */
+.no-results {
+    padding: var(--spacing-xl);
+    text-align: center;
+    color: var(--color-text-secondary);
+    background-color: var(--color-bg-secondary);
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--color-bg-tertiary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .search-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .pagination-container {
+        flex-direction: column;
+        align-items: center;
+        gap: var(--spacing-md);
+        padding: var(--spacing-sm);
+    }
+    
+    .pagination-info, .pagination-controls, .items-per-page {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+    }
+    
+    .pagination-pages {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .page-number {
+        margin-bottom: var(--spacing-xs);
+    }
+}

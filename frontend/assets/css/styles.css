@@ -1,0 +1,61 @@
+/* Estilos personalizados para el Sistema de Control de Acceso y Pagos */
+
+body {
+    background-color: #f5f5f5;
+}
+
+.card {
+    margin-bottom: 20px;
+    border-radius: 8px;
+}
+
+.card-header {
+    border-radius: 8px 8px 0 0;
+}
+
+.btn {
+    border-radius: 4px;
+}
+
+.table th {
+    background-color: #f0f0f0;
+}
+
+.actions-column {
+    width: 150px;
+}
+
+.badge {
+    font-size: 0.9em;
+}
+
+.status-active {
+    background-color: #28a745;
+}
+
+.status-inactive {
+    background-color: #dc3545;
+}
+
+.status-pending {
+    background-color: #ffc107;
+}
+
+.dashboard-card {
+    transition: transform 0.3s;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.dashboard-icon {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+/* Estilos para la página de login */
+.login-container {
+    margin-top: 100px;
+}

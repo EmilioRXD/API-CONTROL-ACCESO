@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Configuración - Sistema de Control de Acceso</title>
+    <link rel="stylesheet" href="css/index.css" />
+    <!-- Boxicons CDN Link -->
+    <link
+      href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+
+  <body>
+    <!-- Mobile Menu -->
+    <div class="mobile-menu">
+      <div class="mobile-menu-overlay"></div>
+      <div class="mobile-menu-container">
+        <div class="mobile-menu-header">
+          <div class="logo_name">Menu</div>
+          <button class="mobile-menu-close">
+            <i class="bx bx-x"></i>
+          </button>
+        </div>
+        <ul class="mobile-menu-items">
+          <li>
+            <a href="dashboard.html">
+              <i class="bx bx-line-chart"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="usuarios.html">
+              <i class="bx bx-group"></i>
+              <span>Usuarios</span>
+            </a>
+          </li>
+          <li>
+            <a href="estudiantes.html">
+              <i class="bx bx-user-pin"></i>
+              <span>Estudiantes</span>
+            </a>
+          </li>
+          <li>
+            <a href="tarjetas.html">
+              <i class="bx bx-credit-card"></i>
+              <span>Tarjetas</span>
+            </a>
+          </li>
+          <li>
+            <a href="registros.html">
+              <i class="bx bx-book-alt"></i>
+              <span>Registros</span>
+            </a>
+          </li>
+          <li>
+            <a class="active" href="configuracion.html">
+              <i class="bx bx-cog"></i>
+              <span>Configuración</span>
+            </a>
+          </li>
+        </ul>
+        <div class="mobile-menu-footer">
+          <div class="mobile-user-info">
+            <img src="profile.jpg" alt="profileImg" />
+            <div class="mobile-user-details">
+              <div class="mobile-user-name">Chuo</div>
+              <div class="mobile-user-role">Administrador</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Desktop Sidebar -->
+    <div class="sidebar">
+      <div class="logo-details">
+        <img src="img/logo.png" class="logo-img" alt="logo" />
+        <div class="logo_name">Menu</div>
+        <i class="bx bx-menu" id="btn"></i>
+      </div>
+      <ul class="nav-list">
+        <li>
+          <a href="dashboard.html">
+            <i class="bx bx-line-chart"></i>
+            <span class="links_name">Inicio</span>
+          </a>
+          <span class="tooltip">Inicio</span>
+        </li>
+        <li>
+          <a href="usuarios.html">
+            <i class="bx bx-group"></i>
+            <span class="links_name">Usuarios</span>
+          </a>
+          <span class="tooltip">Usuarios</span>
+        </li>
+        <li>
+          <a href="estudiantes.html">
+            <i class="bx bx-user-pin"></i>
+            <span class="links_name">Estudiantes</span>
+          </a>
+          <span class="tooltip">Estudiantes</span>
+        </li>
+        <li>
+          <a href="tarjetas.html">
+            <i class="bx bx-credit-card"></i>
+            <span class="links_name">Tarjetas</span>
+          </a>
+          <span class="tooltip">Tarjetas</span>
+        </li>
+        <li>
+          <a href="registros.html">
+            <i class="bx bx-book-alt"></i>
+            <span class="links_name">Registros</span>
+          </a>
+          <span class="tooltip">Registros</span>
+        </li>
+        <li>
+          <a class="active" href="configuracion.html">
+            <i class="bx bx-cog"></i>
+            <span class="links_name">Configuración</span>
+          </a>
+          <span class="tooltip">Configuración</span>
+        </li>
+        <li class="profile">
+          <div class="profile-details">
+            <img src="profile.jpg" alt="profileImg" />
+            <div class="name_job">
+              <div class="name">Chuo</div>
+              <div class="job">Administrador</div>
+            </div>
+          </div>
+          <i class="bx bx-log-out" id="log_out"></i>
+        </li>
+      </ul>
+    </div>
+
+    <section class="home-section">
+      <div class="header-container">
+        <div class="text">Configuración del Sistema</div>
+        <button class="menu-toggle-btn" id="menu-toggle">
+          <i class="bx bx-menu"></i>
+        </button>
+      </div>
+
+      <div class="config-container">
+        <!-- Sección de Periodo de Gracia -->
+        <div class="config-section">
+          <div class="section-header">
+            <h2><i class="bx bx-time"></i> Periodo de Gracia</h2>
+          </div>
+          <div class="section-body">
+            <div class="form-group">
+              <label for="grace-period">Días de periodo de gracia:</label>
+              <input 
+                type="number" 
+                id="grace-period" 
+                class="form-control" 
+                min="0" 
+                max="30" 
+                value="7"
+              >
+              <p class="form-help">Número de días que un estudiante con pago pendiente puede acceder al instituto.</p>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn btn-primary" id="save-grace-period">Guardar</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sección de Bloqueo de Accesos Vencidos -->
+        <div class="config-section">
+          <div class="section-header">
+            <h2><i class="bx bx-lock"></i> Bloqueo de Accesos Vencidos</h2>
+          </div>
+          <div class="section-body">
+            <div class="form-group">
+              <label class="checkbox-container">
+                <input type="checkbox" id="block-expired" checked>
+                <span class="checkmark"></span>
+                Bloquear automáticamente acceso a estudiantes con pagos vencidos
+              </label>
+              <p class="form-help">Al activar esta opción, el sistema bloqueará automáticamente el acceso a estudiantes cuyo periodo de gracia haya expirado.</p>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn btn-primary" id="save-block-settings">Guardar</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sección de Carreras Disponibles -->
+        <div class="config-section">
+          <div class="section-header">
+            <h2><i class="bx bx-book"></i> Carreras Disponibles</h2>
+            <button type="button" class="btn btn-add" id="add-career-btn">
+              <i class="bx bx-plus"></i> Agregar
+            </button>
+          </div>
+          <div class="section-body">
+            <div class="table-responsive">
+              <table class="data-table" id="careers-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Nombre de Carrera</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>Informática</td>
+                    <td class="actions-cell">
+                      <button class="btn-icon btn-edit career-edit" data-id="1">
+                        <i class="bx bx-edit-alt"></i>
+                      </button>
+                      <button class="btn-icon btn-delete career-delete" data-id="1">
+                        <i class="bx bx-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td>Administración</td>
+                    <td class="actions-cell">
+                      <button class="btn-icon btn-edit career-edit" data-id="2">
+                        <i class="bx bx-edit-alt"></i>
+                      </button>
+                      <button class="btn-icon btn-delete career-delete" data-id="2">
+                        <i class="bx bx-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td>Contaduría</td>
+                    <td class="actions-cell">
+                      <button class="btn-icon btn-edit career-edit" data-id="3">
+                        <i class="bx bx-edit-alt"></i>
+                      </button>
+                      <button class="btn-icon btn-delete career-delete" data-id="3">
+                        <i class="bx bx-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sección de Cuotas -->
+        <div class="config-section">
+          <div class="section-header">
+            <h2><i class="bx bx-dollar"></i> Cuotas</h2>
+            <button type="button" class="btn btn-add" id="add-fee-btn">
+              <i class="bx bx-plus"></i> Agregar
+            </button>
+          </div>
+          <div class="section-body">
+            <div class="table-responsive">
+              <table class="data-table" id="fees-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Descripción</th>
+                    <th>Monto</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>Matrícula</td>
+                    <td>$50.00</td>
+                    <td class="actions-cell">
+                      <button class="btn-icon btn-edit fee-edit" data-id="1">
+                        <i class="bx bx-edit-alt"></i>
+                      </button>
+                      <button class="btn-icon btn-delete fee-delete" data-id="1">
+                        <i class="bx bx-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td>Mensualidad</td>
+                    <td>$30.00</td>
+                    <td class="actions-cell">
+                      <button class="btn-icon btn-edit fee-edit" data-id="2">
+                        <i class="bx bx-edit-alt"></i>
+                      </button>
+                      <button class="btn-icon btn-delete fee-delete" data-id="2">
+                        <i class="bx bx-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td>Carnet</td>
+                    <td>$10.00</td>
+                    <td class="actions-cell">
+                      <button class="btn-icon btn-edit fee-edit" data-id="3">
+                        <i class="bx bx-edit-alt"></i>
+                      </button>
+                      <button class="btn-icon btn-delete fee-delete" data-id="3">
+                        <i class="bx bx-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal para agregar/editar carrera -->
+      <div class="modal" id="career-modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 id="career-modal-title">Agregar Carrera</h3>
+            <button class="btn-close" id="career-modal-close">
+              <i class="bx bx-x"></i>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="career-form">
+              <input type="hidden" id="career-id">
+              <div class="form-group">
+                <label for="career-name">Nombre de la Carrera:</label>
+                <input type="text" id="career-name" class="form-control" required>
+              </div>
+              <div class="form-actions">
+                <button type="button" class="btn btn-secondary" id="cancel-career-btn">Cancelar</button>
+                <button type="submit" class="btn btn-primary" id="save-career-btn">Guardar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal para agregar/editar cuota -->
+      <div class="modal" id="fee-modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 id="fee-modal-title">Agregar Cuota</h3>
+            <button class="btn-close" id="fee-modal-close">
+              <i class="bx bx-x"></i>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="fee-form">
+              <input type="hidden" id="fee-id">
+              <div class="form-group">
+                <label for="fee-description">Descripción:</label>
+                <input type="text" id="fee-description" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label for="fee-amount">Monto ($):</label>
+                <input type="number" id="fee-amount" class="form-control" step="0.01" min="0" required>
+              </div>
+              <div class="form-actions">
+                <button type="button" class="btn btn-secondary" id="cancel-fee-btn">Cancelar</button>
+                <button type="submit" class="btn btn-primary" id="save-fee-btn">Guardar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script src="menu.js"></script>
+    <script src="js/configuracion.js"></script>
+  </body>
+</html>

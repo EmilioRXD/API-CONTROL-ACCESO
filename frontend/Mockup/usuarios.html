@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<!-- Created by CodingLab |www.youtube.com/CodingLabYT-->
+<html lang="es" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Usuarios</title>
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/usuarios.css">
+    <!-- Boxicons CDN Link -->
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+    <!-- El botón de menú ha sido eliminado, ahora se usa deslizamiento del dedo -->
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu">
+        <div class="mobile-menu-overlay"></div>
+        <div class="mobile-menu-container">
+            <div class="mobile-menu-header">
+                <div class="logo_name">Menu</div>
+                <button class="mobile-menu-close">
+                    <i class='bx bx-x'></i>
+                </button>
+            </div>
+            <ul class="mobile-menu-items">
+                <li>
+                    <a href="dashboard.html">
+                        <i class='bx bx-line-chart'></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="active" href="usuarios.html">
+                        <i class='bx bx-group'></i>
+                        <span>Usuarios</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="estudiantes.html">
+                        <i class='bx bx-user-pin'></i>
+                        <span>Estudiantes</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="tarjetas.html">
+                        <i class='bx bx-credit-card'></i>
+                        <span>Tarjetas</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="registros.html">
+                        <i class='bx bx-book-alt'></i>
+                        <span>Registros</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="mobile-menu-footer">
+                <div class="mobile-user-info">
+                    <img src="profile.jpg" alt="profileImg">
+                    <div class="mobile-user-details">
+                        <div class="mobile-user-name">Chuo</div>
+                        <div class="mobile-user-role">Administrador</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Desktop Sidebar -->
+    <div class="sidebar">
+        <div class="logo-details">
+<img src="img/logo.png" class="logo-img" alt="logo" />
+        <div class="logo_name">Menu</div>
+        <i class="bx bx-menu" id="btn"></i>
+        </div>
+        <ul class="nav-list">
+            <li>
+                <a href="dashboard.html">
+                    <i class='bx bx-line-chart'></i>
+                    <span class="links_name">Dashboard</span>
+                </a>
+                <span class="tooltip">Dashboard</span>
+            </li>
+            <li>
+                <a class="active" href="usuarios.html">
+                    <i class='bx bx-group'></i>
+                    <span class="links_name">Usuarios</span>
+                </a>
+                <span class="tooltip">Usuarios</span>
+            </li>
+            <li>
+                <a href="estudiantes.html">
+                    <i class='bx bx-user-pin'></i>
+                    <span class="links_name">Estudiantes</span>
+                </a>
+                <span class="tooltip">Estudiantes</span>
+            </li>
+            <li>
+                <a href="tarjetas.html">
+                    <i class='bx bx-credit-card'></i>
+                    <span class="links_name">Tarjetas</span>
+                </a>
+                <span class="tooltip">Tarjetas</span>
+            </li>
+            <li>
+                <a href="registros.html">
+                    <i class='bx bx-book-alt'></i>
+                    <span class="links_name">Registros</span>
+                </a>
+                <span class="tooltip">Registros</span>
+            </li>
+            <li class="profile">
+                <div class="profile-details">
+                    <img src="profile.jpg" alt="profileImg">
+                    <div class="name_job">
+                        <div class="name">Chuo</div>
+                        <div class="job">Administrador</div>
+                    </div>
+                </div>
+                <i class='bx bx-log-out' id="log_out"></i>
+            </li>
+        </ul>
+    </div>
+    <section class="home-section">
+        <div class="header-container">
+            <div class="text">Usuarios</div>
+            <div class="header-actions">
+                <button class="action-btn add-btn" id="add-user-btn">
+                    <i class='bx bx-plus'></i>
+                    <span>Agregar</span>
+                </button>
+                <button class="menu-toggle-btn" id="menu-toggle">
+                    <i class='bx bx-menu'></i>
+                </button>
+            </div>
+        </div>
+
+        <div style="padding: var(--spacing-lg);">
+            <div class="accordion-container">
+                <!-- Barra de búsqueda -->
+                <div class="search-container">
+                    <div class="search-input-wrapper">
+                        <i class='bx bx-search'></i>
+                        <input type="text" id="user-search" placeholder="Buscar por nombre, correo..." class="search-input">
+                    </div>
+                </div>
+                
+
+                
+                <!-- Contador de resultados -->
+                <div class="results-counter">
+                    <span id="users-count">4</span> usuarios encontrados
+                </div>
+
+                <div class="accordion" id="users-container">
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <div class="accordion-title">
+                            <span class="user-name">Juan Pérez</span>
+                            <span class="user-date">admin@ejemplo.com</span>
+                        </div>
+                        <div class="accordion-actions">
+                            <button class="accordion-edit-btn"><i class='bx bx-pencil'></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <div class="accordion-title">
+                            <span class="user-name">María García</span>
+                            <span class="user-date">maria.garcia@ejemplo.com</span>
+                        </div>
+                        <div class="accordion-actions">
+                            <button class="accordion-edit-btn"><i class='bx bx-pencil'></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <div class="accordion-title">
+                            <span class="user-name">Carlos López</span>
+                            <span class="user-date">carlos.lopez@ejemplo.com</span>
+                        </div>
+                        <div class="accordion-actions">
+                            <button class="accordion-edit-btn"><i class='bx bx-pencil'></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <div class="accordion-title">
+                            <span class="user-name">Ana Martínez</span>
+                        </div>
+                        <div class="accordion-actions">
+                            <button class="accordion-edit-btn"><i class='bx bx-pencil'></i></button>
+                            <button class="accordion-toggle"><i class='bx bx-chevron-down'></i></button>
+                        </div>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="user-data-grid">
+                            <div class="user-data-item">
+                                <div class="data-label">Correo:</div>
+                                <div class="data-value">ana.martinez@ejemplo.com</div>
+                            </div>
+                            <div class="user-data-item">
+                                <div class="data-label">Contraseña:</div>
+                                <div class="data-value">••••••••</div>
+                            </div>
+                            <div class="user-data-item">
+                                <div class="data-label">Nombre:</div>
+                                <div class="data-value">Ana</div>
+                            </div>
+                            <div class="user-data-item">
+                                <div class="data-label">Apellido:</div>
+                                <div class="data-value">Martínez</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <div class="accordion-title">
+                            <span class="user-name">Luis Rodríguez</span>
+                            <span class="user-date">luis.rodriguez@ejemplo.com</span>
+                        </div>
+                        <div class="accordion-actions">
+                            <button class="accordion-edit-btn"><i class='bx bx-pencil'></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <div class="accordion-title">
+                            <span class="user-name">Sofía Hernández</span>
+                            <span class="user-date">sofia.hernandez@ejemplo.com</span>
+                        </div>
+                        <div class="accordion-actions">
+                            <button class="accordion-edit-btn"><i class='bx bx-pencil'></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Paginación -->
+            <div class="pagination-container">
+                <div class="pagination-info">
+                    <span>Mostrando <span id="page-start">1</span>-<span id="page-end">4</span> de <span id="total-users">4</span></span>
+                </div>
+                <div class="pagination-controls">
+                    <button id="prev-page" class="pagination-btn" disabled>
+                        <i class='bx bx-chevron-left'></i>
+                    </button>
+                    <div class="pagination-pages" id="pagination-pages">
+                        <button class="page-number active">1</button>
+                    </div>
+                    <button id="next-page" class="pagination-btn" disabled>
+                        <i class='bx bx-chevron-right'></i>
+                    </button>
+                </div>
+                <div class="items-per-page">
+                    <label for="per-page-select">Por página:</label>
+                    <select id="per-page-select">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal para Crear Usuario -->
+    <div id="create-user-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Crear Nuevo Usuario</h2>
+                <button class="modal-close" id="close-modal">
+                    <i class='bx bx-x'></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="create-user-form">
+                    <div class="form-group">
+                        <label for="user-name">Nombre</label>
+                        <input type="text" id="user-name" name="userName" placeholder="Ej: Juan" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="user-lastname">Apellido</label>
+                        <input type="text" id="user-lastname" name="userLastname" placeholder="Ej: Pérez" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="user-email">Correo Electrónico</label>
+                        <input type="email" id="user-email" name="userEmail" placeholder="Ej: usuario@ejemplo.com" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="user-password">Contraseña</label>
+                        <div class="password-input-container">
+                            <input type="password" id="user-password" name="userPassword" required>
+                            <button type="button" class="toggle-password">
+                                <i class='bx bx-hide'></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="user-confirm-password">Confirmar Contraseña</label>
+                        <div class="password-input-container">
+                            <input type="password" id="user-confirm-password" name="userConfirmPassword" required>
+                            <button type="button" class="toggle-password">
+                                <i class='bx bx-hide'></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="secondary-btn" id="cancel-user">Cancelar</button>
+                <button type="submit" form="create-user-form" class="primary-btn">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="menu.js"></script>
+    <script src="js/usuarios.js"></script>
+</body>
+
+</html>

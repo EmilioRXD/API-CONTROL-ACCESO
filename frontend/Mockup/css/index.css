@@ -1,0 +1,24 @@
+/* 
+* index.css
+* Archivo principal que importa todos los módulos CSS
+* Sistema de control de acceso de estudiantes IUTA
+*/
+
+/* Importar variables y estilos base */
+@import 'variables.css';
+@import 'base.css';
+
+/* Importar componentes específicos */
+@import 'layout.css';
+@import 'sidebar.css';
+@import 'dashboard.css';
+@import 'login.css';
+@import 'accordion.css';
+@import 'tables.css';
+@import 'configuracion.css';
+
+/* 
+* Este archivo facilita la importación de todos los estilos 
+* en un solo lugar. Para usar en HTML, simplemente incluir:
+* <link rel="stylesheet" href="css/index.css">
+*/

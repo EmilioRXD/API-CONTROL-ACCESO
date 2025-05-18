@@ -1,0 +1,60 @@
+/* Estilos para tablas de datos con filtros y ordenamiento */
+
+/* Cabecera con soporte de ordenamiento */
+th.sortable {
+    cursor: pointer;
+    position: relative;
+    padding-right: 20px !important;
+}
+
+th.sortable:after {
+    content: "↕";
+    position: absolute;
+    right: 8px;
+    color: #ccc;
+}
+
+th.sortable.asc:after {
+    content: "↑";
+    color: #333;
+}
+
+th.sortable.desc:after {
+    content: "↓";
+    color: #333;
+}
+
+/* Contador de resultados y selector de registros por página */
+.table-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.records-info {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.records-per-page select {
+    width: auto;
+    display: inline-block;
+}
+
+/* Estilos para los filtros de columna */
+.column-filter {
+    margin-top: 8px;
+    width: 100%;
+    font-size: 0.8rem;
+}
+
+/* Marcador visual para columnas filtradas */
+th.filtered {
+    background-color: #e7f3ff !important;
+}
+
+/* Estilos para botones de exportación */
+.export-buttons .btn {
+    margin-left: 5px;
+}

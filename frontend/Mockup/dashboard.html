@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<!-- Created by CodingLab |www.youtube.com/CodingLabYT-->
+<html lang="es" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Dashboard - Estadísticas</title>
+    <link rel="stylesheet" href="css/index.css" />
+    <!-- Boxicons CDN Link -->
+    <link
+      href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+
+  <body>
+    <!-- Mobile Menu -->
+    <div class="mobile-menu">
+      <div class="mobile-menu-overlay"></div>
+      <div class="mobile-menu-container">
+        <div class="mobile-menu-header">
+          <div class="logo_name">Menu</div>
+          <button class="mobile-menu-close">
+            <i class="bx bx-x"></i>
+          </button>
+        </div>
+        <ul class="mobile-menu-items">
+          <li>
+            <a class="active" href="dashboard.html">
+              <i class="bx bx-line-chart"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="usuarios.html">
+              <i class="bx bx-group"></i>
+              <span>Usuarios</span>
+            </a>
+          </li>
+          <li>
+            <a href="estudiantes.html">
+              <i class="bx bx-user-pin"></i>
+              <span>Estudiantes</span>
+            </a>
+          </li>
+          <li>
+            <a href="tarjetas.html">
+              <i class="bx bx-credit-card"></i>
+              <span>Tarjetas</span>
+            </a>
+          </li>
+          <li>
+            <a href="registros.html">
+              <i class="bx bx-book-alt"></i>
+              <span>Registros</span>
+            </a>
+          </li>
+        </ul>
+        <div class="mobile-menu-footer">
+          <div class="mobile-user-info">
+            <img src="profile.jpg" alt="profileImg" />
+            <div class="mobile-user-details">
+              <div class="mobile-user-name">Chuo</div>
+              <div class="mobile-user-role">Administrador</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Desktop Sidebar -->
+    <div class="sidebar">
+      <div class="logo-details">
+        <img src="img/logo.png" class="logo-img" alt="logo" />
+        <div class="logo_name">Menu</div>
+        <i class="bx bx-menu" id="btn"></i>
+      </div>
+      <ul class="nav-list">
+        <li>
+          <a class="active" href="dashboard.html">
+            <i class="bx bx-line-chart"></i>
+            <span class="links_name">Inicio</span>
+          </a>
+          <span class="tooltip">Inicio</span>
+        </li>
+        <li>
+          <a href="usuarios.html">
+            <i class="bx bx-group"></i>
+            <span class="links_name">Usuarios</span>
+          </a>
+          <span class="tooltip">Usuarios</span>
+        </li>
+        <li>
+          <a href="estudiantes.html">
+            <i class="bx bx-user-pin"></i>
+            <span class="links_name">Estudiantes</span>
+          </a>
+          <span class="tooltip">Estudiantes</span>
+        </li>
+        <li>
+          <a href="tarjetas.html">
+            <i class="bx bx-credit-card"></i>
+            <span class="links_name">Tarjetas</span>
+          </a>
+          <span class="tooltip">Tarjetas</span>
+        </li>
+        <li>
+          <a href="registros.html">
+            <i class="bx bx-book-alt"></i>
+            <span class="links_name">Registros</span>
+          </a>
+          <span class="tooltip">Registros</span>
+        </li>
+        <li class="profile">
+          <div class="profile-details">
+            <img src="profile.jpg" alt="profileImg" />
+            <div class="name_job">
+              <div class="name">Chuo</div>
+              <div class="job">Administrador</div>
+            </div>
+          </div>
+          <i class="bx bx-log-out" id="log_out"></i>
+        </li>
+      </ul>
+    </div>
+    <section class="home-section">
+      <div class="header-container">
+        <div class="text">Panel de Monitoreo</div>
+        <button class="menu-toggle-btn" id="menu-toggle">
+          <i class="bx bx-menu"></i>
+        </button>
+      </div>
+
+      <!-- Contenedor principal del dashboard -->
+      <div class="dashboard-container">
+        <!-- Fila superior de tarjetas de estadísticas -->
+        <div class="stats-cards">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="bx bx-door-open"></i>
+            </div>
+            <div class="stat-info">
+              <h3>Accesos Hoy</h3>
+              <p class="stat-number">124</p>
+              <p class="stat-change positive">
+                <i class="bx bx-up-arrow-alt"></i> 8% vs. ayer
+              </p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="bx bx-time"></i>
+            </div>
+            <div class="stat-info">
+              <h3>Hora Pico</h3>
+              <p class="stat-number">7:30 AM</p>
+              <p class="stat-change">45 accesos</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="bx bx-credit-card"></i>
+            </div>
+            <div class="stat-info">
+              <h3>Tarjetas Activas</h3>
+              <p class="stat-number">215</p>
+              <p class="stat-change positive">
+                <i class="bx bx-up-arrow-alt"></i> 5 nuevas este mes
+              </p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="bx bx-error-circle"></i>
+            </div>
+            <div class="stat-info">
+              <h3>Accesos Denegados</h3>
+              <p class="stat-number">12</p>
+              <p class="stat-change negative">
+                <i class="bx bx-down-arrow-alt"></i> 3% este mes
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fila de gráficos -->
+        <div class="charts-row">
+          <!-- Gráfico de tendencia de accesos semanales -->
+          <div class="chart-container">
+            <div class="chart-header">
+              <h3>Tendencia de Accesos Semanales</h3>
+              <div class="chart-actions">
+                <button class="chart-action-btn">
+                  <i class="bx bx-refresh"></i>
+                </button>
+                <button class="chart-action-btn">
+                  <i class="bx bx-dots-vertical-rounded"></i>
+                </button>
+              </div>
+            </div>
+            <div class="chart-body">
+              <canvas id="weeklyAccessChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Gráfico de accesos por hora -->
+          <div class="chart-container">
+            <div class="chart-header">
+              <h3>Accesos por Hora del Día</h3>
+              <div class="chart-actions">
+                <button class="chart-action-btn">
+                  <i class="bx bx-refresh"></i>
+                </button>
+                <button class="chart-action-btn">
+                  <i class="bx bx-dots-vertical-rounded"></i>
+                </button>
+              </div>
+            </div>
+            <div class="chart-body">
+              <canvas id="accessHoursChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Gráfico de distribución de tipos de estudiantes -->
+          <!-- Comentado temporalmente
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3>Distribución por Tipo de Estudiante</h3>
+                        <div class="chart-actions">
+                            <button class="chart-action-btn"><i class='bx bx-refresh'></i></button>
+                            <button class="chart-action-btn"><i class='bx bx-dots-vertical-rounded'></i></button>
+                        </div>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="studentTypeChart"></canvas>
+                    </div>
+                </div>
+                -->
+        </div>
+
+        <!-- Fila inferior de gráficos -->
+        <div class="charts-row">
+          <!-- Gráfico de distribución por carreras -->
+          <!-- Comentado temporalmente
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3>Distribución por Carreras</h3>
+                        <div class="chart-actions">
+                            <button class="chart-action-btn"><i class='bx bx-refresh'></i></button>
+                            <button class="chart-action-btn"><i class='bx bx-dots-vertical-rounded'></i></button>
+                        </div>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="careerDistributionChart"></canvas>
+                    </div>
+                </div>
+                -->
+        </div>
+      </div>
+    </section>
+
+    <script src="menu.js"></script>
+    <!-- Chart.js para gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      // Inicializar los gráficos cuando el DOM esté cargado
+      document.addEventListener("DOMContentLoaded", function () {
+        // Gráfico de tendencia de accesos semanales
+        const weeklyAccessCtx = document
+          .getElementById("weeklyAccessChart")
+          .getContext("2d");
+        const weeklyAccessChart = new Chart(weeklyAccessCtx, {
+          type: "line",
+          data: {
+            labels: [
+              "Lunes",
+              "Martes",
+              "Miércoles",
+              "Jueves",
+              "Viernes",
+              "Sábado",
+            ],
+            datasets: [
+              {
+                label: "Semana Actual",
+                data: [320, 345, 375, 390, 310, 150],
+                backgroundColor: "rgba(52, 152, 219, 0.2)",
+                borderColor: "#3498db",
+                borderWidth: 3,
+                tension: 0.4,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                pointBackgroundColor: "#3498db",
+                pointBorderColor: "#3498db",
+                pointBorderWidth: 0,
+                fill: true,
+              },
+              {
+                label: "Semana Anterior",
+                data: [290, 325, 360, 375, 290, 125],
+                backgroundColor: "rgba(155, 89, 182, 0.2)",
+                borderColor: "#9b59b6",
+                borderWidth: 3,
+                tension: 0.4,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                pointBackgroundColor: "#9b59b6",
+                pointBorderColor: "#9b59b6",
+                pointBorderWidth: 0,
+                fill: true,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+              intersect: false,
+              mode: "index",
+            },
+            plugins: {
+              legend: {
+                position: "top",
+                labels: {
+                  usePointStyle: true,
+                  padding: 15,
+                  font: {
+                    size: 12,
+                    family: "'Poppins', sans-serif",
+                  },
+                },
+              },
+              tooltip: {
+                backgroundColor: "rgba(0, 0, 0, 0.7)",
+                titleColor: "#ffffff",
+                bodyColor: "#ffffff",
+                borderColor: "rgba(255, 255, 255, 0.2)",
+                borderWidth: 1,
+                cornerRadius: 8,
+                boxPadding: 6,
+                usePointStyle: true,
+                titleFont: {
+                  size: 14,
+                  weight: "bold",
+                  family: "'Poppins', sans-serif",
+                },
+                bodyFont: {
+                  size: 12,
+                  family: "'Poppins', sans-serif",
+                },
+              },
+            },
+            scales: {
+              x: {
+                grid: {
+                  display: false,
+                },
+              },
+              y: {
+                beginAtZero: true,
+                grid: {
+                  color: "rgba(200, 200, 200, 0.2)",
+                },
+                title: {
+                  display: true,
+                  text: "Cantidad de Estudiantes",
+                },
+              },
+            },
+          },
+        });
+
+        // Gráfico de distribución de tipos de estudiantes - Comentado temporalmente
+        /*
+            const studentTypeCtx = document.getElementById('studentTypeChart').getContext('2d');
+            const studentTypeChart = new Chart(studentTypeCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Regulares', 'Nuevo Ingreso', 'Reingreso', 'Especiales'],
+                    datasets: [{
+                        data: [65, 20, 10, 5],
+                        backgroundColor: [
+                            '#292d6b', // Color índigo para estudiantes regulares
+                            'rgba(46, 204, 113, 0.8)', // Verde para nuevo ingreso
+                            'rgba(52, 152, 219, 0.8)', // Azul para reingreso
+                            'rgba(155, 89, 182, 0.8)' // Morado para especiales
+                        ],
+                        borderColor: [
+                            '#292d6b',
+                            'rgba(46, 204, 113, 1)',
+                            'rgba(52, 152, 219, 1)',
+                            'rgba(155, 89, 182, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    let value = context.raw || 0;
+                                    let total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    let percentage = Math.round((value / total) * 100);
+                                    return `${label}: ${percentage}% (${value} estudiantes)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            */
+
+        // Gráfico de accesos por hora (mejorado)
+        const accessHoursCtx = document
+          .getElementById("accessHoursChart")
+          .getContext("2d");
+        const accessHoursChart = new Chart(accessHoursCtx, {
+          type: "bar",
+          data: {
+            labels: [
+              "6AM",
+              "7AM",
+              "8AM",
+              "9AM",
+              "10AM",
+              "11AM",
+              "12PM",
+              "1PM",
+              "2PM",
+              "3PM",
+              "4PM",
+              "5PM",
+              "6PM",
+              "7PM",
+              "8PM",
+            ],
+            datasets: [
+              {
+                label: "Entradas",
+                data: [
+                  5, 45, 35, 25, 20, 30, 45, 15, 35, 30, 25, 20, 15, 10, 5,
+                ],
+                backgroundColor: "rgba(52, 152, 219, 0.7)",
+                borderColor: "rgba(52, 152, 219, 1)",
+                borderWidth: 1,
+                borderRadius: 4,
+              },
+              {
+                label: "Salidas",
+                data: [2, 5, 15, 20, 15, 25, 40, 40, 20, 25, 30, 35, 25, 15, 8],
+                backgroundColor: "rgba(231, 76, 60, 0.7)",
+                borderColor: "rgba(231, 76, 60, 1)",
+                borderWidth: 1,
+                borderRadius: 4,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: "top",
+              },
+              tooltip: {
+                mode: "index",
+                intersect: false,
+              },
+            },
+            scales: {
+              x: {
+                grid: {
+                  display: false,
+                },
+                title: {
+                  display: true,
+                  text: "Hora del Día",
+                },
+              },
+              y: {
+                beginAtZero: true,
+                title: {
+                  display: true,
+                  text: "Cantidad de Estudiantes",
+                },
+                grid: {
+                  color: "rgba(200, 200, 200, 0.2)",
+                },
+              },
+            },
+          },
+        });
+
+        // Gráfico de distribución por carreras - Comentado temporalmente
+        /*
+            const careerDistributionCtx = document.getElementById('careerDistributionChart').getContext('2d');
+            const careerDistributionChart = new Chart(careerDistributionCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Administración', 'Informática', 'Mercadeo', 'Contaduría', 'Turismo', 'Otras'],
+                    datasets: [{
+                        data: [30, 25, 15, 20, 5, 5],
+                        backgroundColor: [
+                            'rgba(52, 152, 219, 0.8)', // Azul
+                            'rgba(46, 204, 113, 0.8)', // Verde
+                            'rgba(155, 89, 182, 0.8)', // Morado
+                            'rgba(241, 196, 15, 0.8)', // Amarillo
+                            'rgba(230, 126, 34, 0.8)', // Naranja
+                            'rgba(149, 165, 166, 0.8)'  // Gris
+                        ],
+                        borderColor: [
+                            'rgba(52, 152, 219, 1)',
+                            'rgba(46, 204, 113, 1)',
+                            'rgba(155, 89, 182, 1)',
+                            'rgba(241, 196, 15, 1)',
+                            'rgba(230, 126, 34, 1)',
+                            'rgba(149, 165, 166, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    let value = context.raw || 0;
+                                    let total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    let percentage = Math.round((value / total) * 100);
+                                    return `${label}: ${percentage}% (${value}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            */
+      });
+    </script>
+  </body>
+</html>

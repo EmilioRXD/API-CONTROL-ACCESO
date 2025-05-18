@@ -1,0 +1,245 @@
+/* 
+* estudiante-detalle.css
+* Estilos específicos para la página de detalle de estudiante del sistema de control de acceso
+*/
+
+@import 'variables.css';
+
+.student-detail-container {
+    padding: var(--spacing-lg);
+}
+
+/* Sección de perfil del estudiante */
+.student-profile-section {
+    background-color: var(--color-bg-primary);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.student-profile-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+}
+
+.student-avatar {
+    font-size: 5rem;
+    color: var(--color-text-secondary);
+    background-color: var(--color-bg-secondary);
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.student-basic-info {
+    flex: 1;
+}
+
+.student-basic-info h2 {
+    margin: 0 0 var(--spacing-sm) 0;
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+}
+
+.student-id, .student-career {
+    margin-bottom: var(--spacing-xs);
+    color: var(--color-text-secondary);
+}
+
+.label {
+    font-weight: 500;
+    margin-right: var(--spacing-xs);
+}
+
+.payment-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    background-color: var(--color-pending);
+    color: var(--color-text-light);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-size-xs);
+    margin-top: var(--spacing-sm);
+}
+
+/* Secciones de detalle */
+.detail-sections {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+}
+
+.detail-section {
+    background-color: var(--color-bg-primary);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.payment-section {
+    border-left: 4px solid var(--color-pending);
+}
+
+.section-title {
+    margin: 0 0 var(--spacing-md) 0;
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--color-text-primary);
+    border-bottom: 1px solid var(--color-bg-tertiary);
+    padding-bottom: var(--spacing-sm);
+}
+
+/* Grid para información personal */
+.detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-label {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.detail-value {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-primary);
+    font-weight: 500;
+}
+
+/* Lista de pagos pendientes */
+.payment-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.payment-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius-md);
+    background-color: var(--color-bg-secondary);
+}
+
+.payment-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.payment-name {
+    font-weight: 500;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-sm);
+}
+
+.payment-date {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-xs);
+}
+
+.payment-amount {
+    font-weight: 600;
+    color: var(--color-pending);
+}
+
+.payment-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm);
+    margin-top: var(--spacing-sm);
+    border-top: 1px solid var(--color-bg-tertiary);
+}
+
+.total-label {
+    font-weight: 500;
+    color: var(--color-text-primary);
+}
+
+.total-amount {
+    font-weight: 600;
+    color: var(--color-pending);
+    font-size: var(--font-size-md);
+}
+
+/* Historial de accesos */
+.access-history {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.access-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius-md);
+    background-color: var(--color-bg-secondary);
+}
+
+.access-date, .access-time {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+}
+
+.access-type {
+    font-weight: 500;
+    font-size: var(--font-size-xs);
+    padding: 2px var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+}
+
+.access-entry {
+    background-color: var(--color-success-light);
+    color: var(--color-success);
+}
+
+.access-exit {
+    background-color: var(--color-info-light);
+    color: var(--color-info);
+}
+
+/* Estilos responsivos */
+@media (max-width: 992px) {
+    .detail-sections {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .student-profile-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .header-actions {
+        gap: var(--spacing-xs);
+    }
+    
+    .action-btn span {
+        display: none;
+    }
+    
+    .action-btn {
+        padding: var(--spacing-sm);
+    }
+}

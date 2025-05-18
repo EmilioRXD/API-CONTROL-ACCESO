@@ -1,0 +1,75 @@
+/* 
+* variables.css
+* Archivo de variables globales para el sistema de control de acceso
+*/
+
+:root {
+  /* Colores principales */
+  --color-primary: #11101d;
+  --color-secondary: #292d6b;
+  --color-tertiary: #6699cc;
+  
+  /* Colores de fondo */
+  --color-bg-primary: #fefefe;
+  --color-bg-secondary: #f5f5f5;
+  --color-bg-tertiary: #eee;
+  
+  /* Colores de texto */
+  --color-text-primary: #333;
+  --color-text-secondary: #666;
+  --color-text-light: #f5f5f5;
+  --color-text-dark: #11101d;
+  
+  /* Colores de estado */
+  --color-success: #4CAF50;
+  --color-danger: #F44336;
+  --color-warning: #FFC107;
+  --color-info: #2196F3;
+  --color-pending: #FF9800; /* Color naranja para pagos pendientes */
+  
+  /* Colores de estado con transparencia */
+  --color-success-light: rgba(76, 175, 80, 0.1);
+  --color-danger-light: rgba(244, 67, 54, 0.1);
+  --color-warning-light: rgba(255, 193, 7, 0.1);
+  --color-info-light: rgba(33, 150, 243, 0.1);
+  --color-pending-light: rgba(255, 152, 0, 0.1);
+  
+  /* Sombras */
+  --color-shadow: rgba(0, 0, 0, 0.1);
+  --color-shadow-dark: rgba(0, 0, 0, 0.3);
+  
+  /* Bordes y radios */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 20px;
+  --border-radius-circle: 50%;
+  
+  /* Espaciado */
+  --spacing-xs: 5px;
+  --spacing-sm: 10px;
+  --spacing-md: 15px;
+  --spacing-lg: 20px;
+  --spacing-xl: 25px;
+  --spacing-xxl: 40px;
+  
+  /* Tamaños de fuente */
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 20px;
+  --font-size-xxl: 24px;
+  --font-size-title: 28px;
+  
+  /* Transiciones */
+  --transition-fast: 0.3s ease;
+  --transition-medium: 0.4s ease;
+  --transition-slow: 0.5s ease;
+  
+  /* Breakpoints */
+  --breakpoint-sm: 480px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 992px;
+  --breakpoint-xl: 1200px;
+}

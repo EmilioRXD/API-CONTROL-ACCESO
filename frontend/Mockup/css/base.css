@@ -1,0 +1,168 @@
+/* 
+* base.css
+* Estilos base para el sistema de control de acceso
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import 'variables.css';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background-color: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+  min-height: 100vh;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: var(--transition-fast);
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+  transition: var(--transition-fast);
+}
+
+input, select, textarea {
+  font-family: inherit;
+  font-size: var(--font-size-md);
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+}
+
+/* Utilidades comunes */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.grid {
+  display: grid;
+}
+
+/* Estados de color */
+.text-success {
+  color: var(--color-success);
+}
+
+.text-danger {
+  color: var(--color-danger);
+}
+
+.text-warning {
+  color: var(--color-warning);
+}
+
+.text-info {
+  color: var(--color-info);
+}
+
+.text-pending {
+  color: var(--color-pending);
+}
+
+.bg-success {
+  background-color: var(--color-success);
+}
+
+.bg-danger {
+  background-color: var(--color-danger);
+}
+
+.bg-warning {
+  background-color: var(--color-warning);
+}
+
+.bg-info {
+  background-color: var(--color-info);
+}
+
+.bg-pending {
+  background-color: var(--color-pending);
+}
+
+.bg-success-light {
+  background-color: var(--color-success-light);
+}
+
+.bg-danger-light {
+  background-color: var(--color-danger-light);
+}
+
+.bg-warning-light {
+  background-color: var(--color-warning-light);
+}
+
+.bg-info-light {
+  background-color: var(--color-info-light);
+}
+
+.bg-pending-light {
+  background-color: var(--color-pending-light);
+}
+
+/* Elementos de estado */
+.status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--border-radius-circle);
+  display: inline-block;
+  margin-right: var(--spacing-xs);
+}
+
+.status-container {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: var(--border-radius-xl);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+}
+
+/* Responsive utilities */
+@media (max-width: 768px) {
+  .hide-md {
+    display: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .hide-sm {
+    display: none !important;
+  }
+}

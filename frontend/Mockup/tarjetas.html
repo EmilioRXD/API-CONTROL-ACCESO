@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<!-- Created by CodingLab |www.youtube.com/CodingLabYT-->
+<html lang="es" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Tarjetas</title>
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/tarjetas.css">
+    <!-- Boxicons CDN Link -->
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+    <!-- El botón de menú ha sido eliminado, ahora se usa deslizamiento del dedo -->
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu">
+        <div class="mobile-menu-overlay"></div>
+        <div class="mobile-menu-container">
+            <div class="mobile-menu-header">
+                <div class="logo_name">Menu</div>
+                <button class="mobile-menu-close">
+                    <i class='bx bx-x'></i>
+                </button>
+            </div>
+            <ul class="mobile-menu-items">
+                <li>
+                    <a href="dashboard.html">
+                        <i class='bx bx-line-chart'></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="usuarios.html">
+                        <i class='bx bx-group'></i>
+                        <span>Usuarios</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="estudiantes.html">
+                        <i class='bx bx-user-pin'></i>
+                        <span>Estudiantes</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="active" href="tarjetas.html">
+                        <i class='bx bx-credit-card'></i>
+                        <span>Tarjetas</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="registros.html">
+                        <i class='bx bx-book-alt'></i>
+                        <span>Registros</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="mobile-menu-footer">
+                <div class="mobile-user-info">
+                    <img src="profile.jpg" alt="profileImg">
+                    <div class="mobile-user-details">
+                        <div class="mobile-user-name">Chuo</div>
+                        <div class="mobile-user-role">Administrador</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Desktop Sidebar -->
+    <div class="sidebar">
+        <div class="logo-details">
+<img src="img/logo.png" class="logo-img" alt="logo" />
+        <div class="logo_name">Menu</div>
+        <i class="bx bx-menu" id="btn"></i>
+        </div>
+        <ul class="nav-list">
+            <li>
+                <a href="dashboard.html">
+                    <i class='bx bx-line-chart'></i>
+                    <span class="links_name">Dashboard</span>
+                </a>
+                <span class="tooltip">Dashboard</span>
+            </li>
+            <li>
+                <a href="usuarios.html">
+                    <i class='bx bx-group'></i>
+                    <span class="links_name">Usuarios</span>
+                </a>
+                <span class="tooltip">Usuarios</span>
+            </li>
+            <li>
+                <a href="estudiantes.html">
+                    <i class='bx bx-user-pin'></i>
+                    <span class="links_name">Estudiantes</span>
+                </a>
+                <span class="tooltip">Estudiantes</span>
+            </li>
+            <li>
+                <a class="active" href="tarjetas.html">
+                    <i class='bx bx-credit-card'></i>
+                    <span class="links_name">Tarjetas</span>
+                </a>
+                <span class="tooltip">Tarjetas</span>
+            </li>
+            <li>
+                <a href="registros.html">
+                    <i class='bx bx-book-alt'></i>
+                    <span class="links_name">Registros</span>
+                </a>
+                <span class="tooltip">Registros</span>
+            </li>
+            <li class="profile">
+                <div class="profile-details">
+                    <img src="profile.jpg" alt="profileImg">
+                    <div class="name_job">
+                        <div class="name">Chuo</div>
+                        <div class="job">Administrador</div>
+                    </div>
+                </div>
+                <i class='bx bx-log-out' id="log_out"></i>
+            </li>
+        </ul>
+    </div>
+    <section class="home-section">
+        <div class="header-container">
+            <div class="text">Tarjetas</div>
+            <button class="menu-toggle-btn" id="menu-toggle">
+                <i class='bx bx-menu'></i>
+            </button>
+        </div>
+
+        <div style="padding: var(--spacing-lg);">
+            <div class="accordion-container">
+            <!-- Barra de búsqueda y filtros avanzados -->
+            <div class="search-container">
+                <div class="search-input-wrapper">
+                    <i class='bx bx-search'></i>
+                    <input type="text" id="student-search" placeholder="Buscar por nombre, cédula o número de tarjeta..." class="search-input">
+                </div>
+                <button id="advanced-filters-toggle" class="advanced-filters-btn">
+                    <i class='bx bx-filter-alt'></i> Filtros
+                </button>
+            </div>
+            
+            <!-- Panel de filtros avanzados (oculto por defecto) -->
+            <div id="advanced-filters-panel" class="advanced-filters-panel">
+                <div class="filter-group">
+                    <h4>Estado</h4>
+                    <div class="filter-options accordion-filters">
+                        <button class="filter-button" data-value="activa">Activas</button>
+                        <button class="filter-button" data-value="inactiva">Inactivas</button>
+                        <button class="filter-button payment-pending" data-value="pendiente">Pagos Pendientes</button>
+                    </div>
+                </div>
+                <div class="filter-actions">
+                    <button id="reset-filters" class="reset-filters-btn">Restablecer</button>
+                </div>
+            </div>
+            
+            <!-- Contador de resultados -->
+            <div class="results-counter">
+                <span id="students-count">4</span> tarjetas encontradas
+            </div>
+
+            <div class="accordion" id="students-container">
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <div class="accordion-title">
+                            <span class="user-name">Carlos Rodríguez</span>
+                            <span class="user-date">25.789.432</span>
+                        </div>
+                        <div class="accordion-actions">
+                            <div class="status-container status-active-container"
+                                title="Esta tarjeta está activa y puede ser utilizada">
+                                <span class="status-indicator status-active"></span>
+                                <span>Activa</span>
+                            </div>
+                            <button class="accordion-edit-btn" title="Editar tarjeta"><i
+                                    class='bx bx-pencil'></i></button>
+                            <button class="accordion-toggle" title="Ver detalles"><i
+                                    class='bx bx-chevron-down'></i></button>
+                        </div>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="user-data-grid">
+                            <div class="user-data-item">
+                                <div class="data-label">Número:</div>
+                                <div class="data-value">T-001-2023</div>
+                            </div>
+                            <div class="user-data-item">
+                                <div class="data-label">Estudiante:</div>
+                                <div class="data-value">Carlos Rodríguez</div>
+                            </div>
+                            <div class="user-data-item">
+                                <div class="data-label">Estado:</div>
+                                <div class="data-value">Activa</div>
+                            </div>
+                            <div class="user-data-item">
+                                <div class="data-label">Fecha de Emisión:</div>
+                                <div class="data-value">01/03/2023</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <div class="accordion-title">
+                            <span class="user-name">María González</span>
+                            <span class="user-date">26.543.218</span>
+                        </div>
+                        <div class="accordion-actions">
+                            <div class="status-container status-active-container"
+                                title="Esta tarjeta está activa y puede ser utilizada">
+                                <span class="status-indicator status-active"></span>
+                                <span>Activa</span>
+                            </div>
+                            <button class="accordion-edit-btn" title="Editar tarjeta"><i
+                                    class='bx bx-pencil'></i></button>
+                            <button class="accordion-toggle" title="Ver detalles"><i
+                                    class='bx bx-chevron-down'></i></button>
+                        </div>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="user-data-grid">
+                            <div class="user-data-item">
+                                <div class="data-label">Número:</div>
+                                <div class="data-value">T-002-2023</div>
+                            </div>
+                            <div class="user-data-item">
+                                <div class="data-label">Estudiante:</div>
+                                <div class="data-value">María González</div>
+                            </div>
+                            <div class="user-data-item">
+                                <div class="data-label">Estado:</div>
+                                <div class="data-value">Activa</div>
+                            </div>
+                            <div class="user-data-item">
+                                <div class="data-label">Fecha de Emisión:</div>
+                                <div class="data-value">15/03/2023</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <div class="accordion-title">
+                            <span class="user-name">José Pérez</span>
+                            <span class="user-date">28.123.456</span>
+                        </div>
+                        <div class="accordion-actions">
+                            <div class="status-container status-inactive-container"
+                                title="Esta tarjeta está inactiva y no puede ser utilizada">
+                                <span class="status-indicator status-inactive"></span>
+                                <span>Inactiva</span>
+                            </div>
+                            <button class="accordion-edit-btn" title="Editar tarjeta"><i
+                                    class='bx bx-pencil'></i></button>
+                            <button class="accordion-toggle" title="Ver detalles"><i
+                                    class='bx bx-chevron-down'></i></button>
+                        </div>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="user-data-grid">
+                            <div class="user-data-item">
+                                <div class="data-label">Número:</div>
+                                <div class="data-value">T-003-2023</div>
+                            </div>
+                            <div class="user-data-item">
+                                <div class="data-label">Estudiante:</div>
+                                <div class="data-value">José Pérez</div>
+                            </div>
+                            <div class="user-data-item">
+                                <div class="data-label">Estado:</div>
+                                <div class="data-value">Inactiva</div>
+                            </div>
+                            <div class="user-data-item">
+                                <div class="data-label">Fecha de Emisión:</div>
+                                <div class="data-value">22/03/2023</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <div class="accordion-title">
+                            <span class="user-name">Laura Díaz</span>
+                            <span class="user-date">29.876.543</span>
+                        </div>
+                        <div class="accordion-actions">
+                            <div class="status-container status-active-container"
+                                title="Esta tarjeta está activa y puede ser utilizada">
+                                <span class="status-indicator status-active"></span>
+                                <span>Activa</span>
+                            </div>
+                            <button class="accordion-edit-btn" title="Editar tarjeta"><i
+                                    class='bx bx-pencil'></i></button>
+                            <button class="accordion-toggle" title="Ver detalles"><i
+                                    class='bx bx-chevron-down'></i></button>
+                        </div>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="user-data-grid">
+                            <div class="user-data-item">
+                                <div class="data-label">Número:</div>
+                                <div class="data-value">T-004-2023</div>
+                            </div>
+                            <div class="user-data-item">
+                                <div class="data-label">Estudiante:</div>
+                                <div class="data-value">Laura Díaz</div>
+                            </div>
+                            <div class="user-data-item">
+                                <div class="data-label">Estado:</div>
+                                <div class="data-value">Activa</div>
+                            </div>
+                            <div class="user-data-item">
+                                <div class="data-label">Fecha de Emisión:</div>
+                                <div class="data-value">05/04/2023</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <div class="accordion-title">
+                            <span class="user-name">Andrés Martínez</span>
+                            <span class="user-date">30.034.068</span>
+                        </div>
+                        <div class="accordion-actions">
+                            <div class="status-container status-pending-container" title="El estudiante tiene un pago pendiente pero aún puede acceder por tiempo limitado">
+                                <span class="status-indicator status-pending"></span>
+                                <span>Pago Pendiente</span>
+                            </div>
+                            <button class="accordion-edit-btn" title="Editar tarjeta"><i
+                                    class='bx bx-pencil'></i></button>
+                            <button class="accordion-toggle" title="Ver detalles"><i
+                                    class='bx bx-chevron-down'></i></button>
+                        </div>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="user-data-grid">
+                            <div class="user-data-item">
+                                <div class="data-label">Número:</div>
+                                <div class="data-value">T-005-2023</div>
+                            </div>
+                            <div class="user-data-item">
+                                <div class="data-label">Estudiante:</div>
+                                <div class="data-value">Andrés Martínez</div>
+                            </div>
+                            <div class="user-data-item">
+                                <div class="data-label">Estado:</div>
+                                <div class="data-value">Pago Pendiente</div>
+                            </div>
+                            <div class="user-data-item">
+                                <div class="data-label">Fecha de Emisión:</div>
+                                <div class="data-value">12/04/2023</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Paginación -->
+            <div class="pagination-container">
+                <div class="pagination-info">
+                    <span>Mostrando <span id="page-start">1</span>-<span id="page-end">4</span> de <span id="total-students">4</span></span>
+                </div>
+                <div class="pagination-controls">
+                    <button id="prev-page" class="pagination-btn" disabled>
+                        <i class='bx bx-chevron-left'></i>
+                    </button>
+                    <div class="pagination-pages" id="pagination-pages">
+                        <button class="page-number active">1</button>
+                    </div>
+                    <button id="next-page" class="pagination-btn" disabled>
+                        <i class='bx bx-chevron-right'></i>
+                    </button>
+                </div>
+                <div class="items-per-page">
+                    <label for="per-page-select">Por página:</label>
+                    <select id="per-page-select">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    </section>
+
+    <script src="menu.js"></script>
+    <script src="js/tarjetas.js"></script>
+</body>
+
+</html>

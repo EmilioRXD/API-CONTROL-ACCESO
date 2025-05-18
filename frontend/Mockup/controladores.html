@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Gestión de Controladores</title>
+    <link rel="stylesheet" href="css/index.css" />
+    <link rel="stylesheet" href="css/controladores.css" />
+    <!-- Boxicons CDN Link -->
+    <link
+      href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+
+  <body>
+    <!-- Mobile Menu -->
+    <div class="mobile-menu">
+      <div class="mobile-menu-overlay"></div>
+      <div class="mobile-menu-container">
+        <div class="mobile-menu-header">
+          <div class="logo_name">Menu</div>
+          <button class="mobile-menu-close">
+            <i class="bx bx-x"></i>
+          </button>
+        </div>
+        <ul class="mobile-menu-items">
+          <li>
+            <a href="dashboard.html">
+              <i class="bx bx-line-chart"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="usuarios.html">
+              <i class="bx bx-group"></i>
+              <span>Usuarios</span>
+            </a>
+          </li>
+          <li>
+            <a href="estudiantes.html">
+              <i class="bx bx-user-pin"></i>
+              <span>Estudiantes</span>
+            </a>
+          </li>
+          <li>
+            <a href="tarjetas.html">
+              <i class="bx bx-credit-card"></i>
+              <span>Tarjetas</span>
+            </a>
+          </li>
+          <li>
+            <a href="registros.html">
+              <i class="bx bx-book-alt"></i>
+              <span>Registros</span>
+            </a>
+          </li>
+          <li>
+            <a class="active" href="controladores.html">
+              <i class="bx bx-chip"></i>
+              <span>Controladores</span>
+            </a>
+          </li>
+        </ul>
+        <div class="mobile-menu-footer">
+          <div class="mobile-user-info">
+            <img src="profile.jpg" alt="profileImg" />
+            <div class="mobile-user-details">
+              <div class="mobile-user-name">Chuo</div>
+              <div class="mobile-user-role">Administrador</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Desktop Sidebar -->
+    <div class="sidebar">
+      <div class="logo-details">
+        <img src="img/logo.png" class="logo-img" alt="logo" />
+        <div class="logo_name">Menu</div>
+        <i class="bx bx-menu" id="btn"></i>
+      </div>
+      <ul class="nav-list">
+        <li>
+          <a href="dashboard.html">
+            <i class="bx bx-line-chart"></i>
+            <span class="links_name">Inicio</span>
+          </a>
+          <span class="tooltip">Inicio</span>
+        </li>
+        <li>
+          <a href="usuarios.html">
+            <i class="bx bx-group"></i>
+            <span class="links_name">Usuarios</span>
+          </a>
+          <span class="tooltip">Usuarios</span>
+        </li>
+        <li>
+          <a href="estudiantes.html">
+            <i class="bx bx-user-pin"></i>
+            <span class="links_name">Estudiantes</span>
+          </a>
+          <span class="tooltip">Estudiantes</span>
+        </li>
+        <li>
+          <a href="tarjetas.html">
+            <i class="bx bx-credit-card"></i>
+            <span class="links_name">Tarjetas</span>
+          </a>
+          <span class="tooltip">Tarjetas</span>
+        </li>
+        <li>
+          <a href="registros.html">
+            <i class="bx bx-book-alt"></i>
+            <span class="links_name">Registros</span>
+          </a>
+          <span class="tooltip">Registros</span>
+        </li>
+        <li>
+          <a class="active" href="controladores.html">
+            <i class="bx bx-chip"></i>
+            <span class="links_name">Controladores</span>
+          </a>
+          <span class="tooltip">Controladores</span>
+        </li>
+        <li class="profile">
+          <div class="profile-details">
+            <img src="profile.jpg" alt="profileImg" />
+            <div class="name_job">
+              <div class="name">Chuo</div>
+              <div class="job">Administrador</div>
+            </div>
+          </div>
+          <i class="bx bx-log-out" id="log_out"></i>
+        </li>
+      </ul>
+    </div>
+    <section class="home-section">
+      <div class="header-container">
+        <div class="text">Gestión de Controladores</div>
+        <button class="menu-toggle-btn" id="menu-toggle">
+          <i class="bx bx-menu"></i>
+        </button>
+      </div>
+
+      <div style="padding: var(--spacing-lg);">
+        <div class="controller-container">
+        <!-- Barra de búsqueda y filtros -->
+        <div class="search-container">
+          <div class="search-input-wrapper">
+            <i class="bx bx-search"></i>
+            <input
+              type="text"
+              class="search-input"
+              placeholder="Buscar controlador..."
+            />
+          </div>
+          <button class="advanced-filters-btn">
+            <i class="bx bx-filter-alt"></i>
+            <span>Filtros</span>
+          </button>
+        </div>
+
+        <!-- Filtros rápidos -->
+        <div class="controller-filters">
+          <button class="filter-button active">Todos</button>
+          <button class="filter-button">Lectores</button>
+          <button class="filter-button">Escritores</button>
+          <button class="filter-button">Entrada</button>
+          <button class="filter-button">Salida</button>
+        </div>
+
+        <!-- Tarjetas de controladores -->
+        <div class="controllers-grid">
+          <!-- Controlador 1 -->
+          <div class="controller-card">
+            <div class="controller-icon-container">
+              <i class='bx bx-chip controller-icon'></i>
+            </div>
+            <div class="controller-info">
+              <div class="location-header">
+                <h3 class="controller-location">Entrada Principal</h3>
+                <button class="edit-controller-btn" title="Editar controlador">
+                  <i class="bx bx-edit"></i>
+                </button>
+              </div>
+              <div class="controller-mac">DE:AD:BE:EF:01:23</div>
+              <ul class="controller-details">
+                <li>
+                  <span class="detail-label">Función:</span> 
+                  <span class="badge badge-reader">LECTOR</span>
+                </li>
+                <li>
+                  <span class="detail-label">Tipo:</span> 
+                  <span class="badge badge-entry">ENTRADA</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Controlador 2 -->
+          <div class="controller-card">
+            <div class="controller-icon-container">
+              <i class='bx bx-chip controller-icon'></i>
+            </div>
+            <div class="controller-info">
+              <div class="location-header">
+                <h3 class="controller-location">Salida Posterior</h3>
+                <button class="edit-controller-btn" title="Editar controlador">
+                  <i class="bx bx-edit"></i>
+                </button>
+              </div>
+              <div class="controller-mac">DE:AD:BE:EF:01:23</div>
+              <ul class="controller-details">
+                <li>
+                  <span class="detail-label">Función:</span> 
+                  <span class="badge badge-reader">LECTOR</span>
+                </li>
+                <li>
+                  <span class="detail-label">Tipo:</span> 
+                  <span class="badge badge-exit">SALIDA</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Controlador 3 -->
+          <div class="controller-card">
+            <div class="controller-icon-container">
+              <i class='bx bx-chip controller-icon'></i>
+            </div>
+            <div class="controller-info">
+              <div class="location-header">
+                <h3 class="controller-location">Sala de Servidores</h3>
+                <button class="edit-controller-btn" title="Editar controlador">
+                  <i class="bx bx-edit"></i>
+                </button>
+              </div>
+              <div class="controller-mac">12:34:56:78:9A:BC</div>
+              <ul class="controller-details">
+                <li>
+                  <span class="detail-label">Función:</span> 
+                  <span class="badge badge-writer">ESCRITOR</span>
+                </li>
+                <li>
+                  <span class="detail-label">Tipo:</span> 
+                  <span class="badge badge-na">N/A</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Controlador 4 -->
+          <div class="controller-card">
+            <div class="controller-icon-container">
+              <i class='bx bx-chip controller-icon'></i>
+            </div>
+            <div class="controller-info">
+              <div class="location-header">
+                <h3 class="controller-location">Laboratorio 1</h3>
+                <button class="edit-controller-btn" title="Editar controlador">
+                  <i class="bx bx-edit"></i>
+                </button>
+              </div>
+              <div class="controller-mac">DE:AD:BE:EF:12:34</div>
+              <ul class="controller-details">
+                <li>
+                  <span class="detail-label">Función:</span> 
+                  <span class="badge badge-writer">ESCRITOR</span>
+                </li>
+                <li>
+                  <span class="detail-label">Tipo:</span> 
+                  <span class="badge badge-na">N/A</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botón de agregar nuevo controlador -->
+        <div class="add-controller-container">
+          <button class="add-controller-btn">
+            <i class="bx bx-plus"></i>
+            <span>Agregar Controlador</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    </section>
+
+    <script src="menu.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Filtros rápidos
+        const filterButtons = document.querySelectorAll(".filter-button");
+        filterButtons.forEach((btn) => {
+          btn.addEventListener("click", function () {
+            filterButtons.forEach((b) => b.classList.remove("active"));
+            this.classList.add("active");
+            // Aquí se implementaría la lógica de filtrado
+          });
+        });
+
+        // Modal para agregar controlador (pendiente)
+        const addControllerBtn = document.querySelector(".add-controller-btn");
+        addControllerBtn.addEventListener("click", function () {
+          alert("Función para agregar controlador");
+          // Aquí se implementaría la lógica para mostrar modal
+        });
+      });
+    </script>
+  </body>
+</html>

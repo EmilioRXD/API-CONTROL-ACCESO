@@ -1,0 +1,137 @@
+/* 
+* tables.css
+* Estilos para las tablas del sistema de control de acceso
+*/
+
+@import 'variables.css';
+
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Poppins", sans-serif;
+  background-color: var(--color-bg-primary);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+}
+
+.user-table thead {
+  background-color: var(--color-text-primary);
+  color: var(--color-bg-primary);
+}
+
+.user-table th,
+.user-table td {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: var(--font-size-md);
+}
+
+.user-table th {
+  font-weight: 600;
+}
+
+.user-table tbody tr {
+  border-bottom: 1px solid var(--color-bg-tertiary);
+  transition: background var(--transition-fast);
+}
+
+.user-table tbody tr:hover {
+  background-color: var(--color-bg-secondary);
+}
+
+.user-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.user-table td {
+  color: var(--color-text-dark);
+}
+
+.user-table .action-btn {
+  background-color: var(--color-warning);
+  color: var(--color-bg-primary);
+  padding: 0.5rem 1rem;
+  font-size: var(--font-size-sm);
+  font-weight: bold;
+  border: none;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.user-table .action-btn:hover {
+  background-color: var(--color-pending);
+  color: var(--color-bg-primary);
+}
+
+/* Estado de pago pendiente en tablas */
+.payment-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+}
+
+.payment-status.pending {
+  background-color: var(--color-pending-light);
+  color: var(--color-pending);
+}
+
+.payment-status.paid {
+  background-color: var(--color-success-light);
+  color: var(--color-success);
+}
+
+.payment-status.overdue {
+  background-color: var(--color-danger-light);
+  color: var(--color-danger);
+}
+
+.payment-status::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--border-radius-circle);
+  margin-right: 5px;
+}
+
+.payment-status.pending::before {
+  background-color: var(--color-pending);
+}
+
+.payment-status.paid::before {
+  background-color: var(--color-success);
+}
+
+.payment-status.overdue::before {
+  background-color: var(--color-danger);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .user-table {
+    min-width: 600px;
+  }
+  
+  .user-table th,
+  .user-table td {
+    padding: 10px 12px;
+    font-size: var(--font-size-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  .user-table th,
+  .user-table td {
+    padding: 8px 10px;
+    font-size: var(--font-size-xs);
+  }
+  
+  .user-table .action-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: var(--font-size-xs);
+  }
+}

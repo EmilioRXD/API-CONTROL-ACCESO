@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle de Estudiante</title>
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/estudiantes.css">
+    <link rel="stylesheet" href="css/estudiante-detalle.css">
+    <!-- Boxicons CDN Link -->
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+    <!-- Mobile Menu -->
+    <div class="mobile-menu">
+        <div class="mobile-menu-overlay"></div>
+        <div class="mobile-menu-container">
+            <div class="mobile-menu-header">
+                <div class="logo_name">Menu</div>
+                <button class="mobile-menu-close">
+                    <i class='bx bx-x'></i>
+                </button>
+            </div>
+            <ul class="mobile-menu-items">
+                <li>
+                    <a href="dashboard.html">
+                        <i class='bx bx-line-chart'></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="usuarios.html">
+                        <i class='bx bx-group'></i>
+                        <span>Usuarios</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="active" href="estudiantes.html">
+                        <i class='bx bx-user-pin'></i>
+                        <span>Estudiantes</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="tarjetas.html">
+                        <i class='bx bx-credit-card'></i>
+                        <span>Tarjetas</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="registros.html">
+                        <i class='bx bx-book-alt'></i>
+                        <span>Registros</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="mobile-menu-footer">
+                <div class="mobile-user-info">
+                    <img src="profile.jpg" alt="profileImg">
+                    <div class="mobile-user-details">
+                        <div class="mobile-user-name">Chuo</div>
+                        <div class="mobile-user-role">Administrador</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Desktop Sidebar -->
+    <div class="sidebar">
+        <div class="logo-details">
+            <img src="img/logo.png" class="logo-img" alt="logo" />
+            <div class="logo_name">Menu</div>
+            <i class="bx bx-menu" id="btn"></i>
+        </div>
+        <ul class="nav-list">
+            <li>
+                <a href="dashboard.html">
+                    <i class='bx bx-line-chart'></i>
+                    <span class="links_name">Dashboard</span>
+                </a>
+                <span class="tooltip">Dashboard</span>
+            </li>
+            <li>
+                <a href="usuarios.html">
+                    <i class='bx bx-group'></i>
+                    <span class="links_name">Usuarios</span>
+                </a>
+                <span class="tooltip">Usuarios</span>
+            </li>
+            <li>
+                <a class="active" href="estudiantes.html">
+                    <i class='bx bx-user-pin'></i>
+                    <span class="links_name">Estudiantes</span>
+                </a>
+                <span class="tooltip">Estudiantes</span>
+            </li>
+            <li>
+                <a href="tarjetas.html">
+                    <i class='bx bx-credit-card'></i>
+                    <span class="links_name">Tarjetas</span>
+                </a>
+                <span class="tooltip">Tarjetas</span>
+            </li>
+            <li>
+                <a href="registros.html">
+                    <i class='bx bx-book-alt'></i>
+                    <span class="links_name">Registros</span>
+                </a>
+                <span class="tooltip">Registros</span>
+            </li>
+            <li class="profile">
+                <div class="profile-details">
+                    <img src="profile.jpg" alt="profileImg">
+                    <div class="name_job">
+                        <div class="name">Chuo</div>
+                        <div class="job">Administrador</div>
+                    </div>
+                </div>
+                <i class='bx bx-log-out' id="log_out"></i>
+            </li>
+        </ul>
+    </div>
+
+    <section class="home-section">
+        <div class="header-container">
+            <div class="text">Detalle de Estudiante</div>
+            <div class="header-actions">
+                <a href="estudiantes.html" class="action-btn" id="back-btn">
+                    <i class='bx bx-arrow-back'></i>
+                    <span>Volver</span>
+                </a>
+                <button class="action-btn" id="edit-student-btn">
+                    <i class='bx bx-pencil'></i>
+                    <span>Editar</span>
+                </button>
+                <button class="menu-toggle-btn" id="menu-toggle">
+                    <i class='bx bx-menu'></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="student-detail-container">
+            <div class="student-profile-section">
+                <div class="student-profile-header">
+                    <div class="student-avatar">
+                        <i class='bx bx-user-circle'></i>
+                    </div>
+                    <div class="student-basic-info">
+                        <h2 id="student-full-name">Carlos Rodríguez</h2>
+                        <div class="student-id">
+                            <span class="label">Cédula:</span>
+                            <span id="student-id-number">V-12.345.678</span>
+                        </div>
+                        <div class="student-career">
+                            <span class="label">Carrera:</span>
+                            <span id="student-career">Informática</span>
+                        </div>
+                        <div class="payment-status-badge" id="payment-status">
+                            <i class='bx bx-calendar-exclamation'></i>
+                            <span>Pagos Pendientes</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detail-sections">
+                <div class="detail-section">
+                    <h3 class="section-title">Información Personal</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <span class="detail-label">Nombre:</span>
+                            <span class="detail-value" id="student-first-name">Carlos</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Apellido:</span>
+                            <span class="detail-value" id="student-last-name">Rodríguez</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Cédula:</span>
+                            <span class="detail-value" id="student-id-detail">V-12.345.678</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Carrera:</span>
+                            <span class="detail-value" id="student-career-detail">Informática</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Semestre:</span>
+                            <span class="detail-value" id="student-semester">4to Semestre</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Correo:</span>
+                            <span class="detail-value" id="student-email">carlos.rodriguez@ejemplo.com</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-section payment-section">
+                    <h3 class="section-title">Pagos Pendientes</h3>
+                    <div class="payment-list" id="pending-payments">
+                        <div class="payment-item">
+                            <div class="payment-info">
+                                <div class="payment-name">Matrícula Semestre</div>
+                                <div class="payment-date">Vence: 15/06/2025</div>
+                            </div>
+                            <div class="payment-amount">$120.00</div>
+                        </div>
+                        <div class="payment-item">
+                            <div class="payment-info">
+                                <div class="payment-name">Laboratorio de Informática</div>
+                                <div class="payment-date">Vence: 30/06/2025</div>
+                            </div>
+                            <div class="payment-amount">$45.00</div>
+                        </div>
+                        <div class="payment-total">
+                            <span class="total-label">Total Pendiente:</span>
+                            <span class="total-amount">$165.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h3 class="section-title">Historial de Accesos</h3>
+                    <div class="access-history" id="access-history">
+                        <div class="access-item">
+                            <div class="access-date">14/05/2025</div>
+                            <div class="access-time">08:30</div>
+                            <div class="access-type access-entry">Entrada</div>
+                        </div>
+                        <div class="access-item">
+                            <div class="access-date">14/05/2025</div>
+                            <div class="access-time">13:45</div>
+                            <div class="access-type access-exit">Salida</div>
+                        </div>
+                        <div class="access-item">
+                            <div class="access-date">13/05/2025</div>
+                            <div class="access-time">09:15</div>
+                            <div class="access-type access-entry">Entrada</div>
+                        </div>
+                        <div class="access-item">
+                            <div class="access-date">13/05/2025</div>
+                            <div class="access-time">14:30</div>
+                            <div class="access-type access-exit">Salida</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="menu.js"></script>
+    <script src="js/estudiante-detalle.js"></script>
+</body>
+
+</html>
