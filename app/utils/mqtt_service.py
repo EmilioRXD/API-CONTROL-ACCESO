@@ -11,7 +11,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class MQTTService:
-    def __init__(self, broker_host="localhost", broker_port=1883, client_id=None):
+    def __init__(self, broker_host="0.0.0.0", broker_port=1883, client_id=None):
         """
         Inicializa el servicio MQTT para comunicarse con los dispositivos ESP32.
         
@@ -23,12 +23,17 @@ class MQTTService:
         self.broker_host = broker_host
         self.broker_port = broker_port
         self.client_id = client_id or f"backend-{uuid.uuid4().hex[:8]}"
-        self.client = mqtt.Client(client_id=self.client_id)
+        # Initialize MQTT client with clean session
+        self.client = mqtt.Client(client_id=self.client_id, clean_session=True)
         
-        # Configurar callbacks
+        # Configure callbacks
         self.client.on_connect = self._on_connect
         self.client.on_message = self._on_message
         self.client.on_disconnect = self._on_disconnect
+        
+        # Set up connection retry mechanism
+        self.client.reconnect_delay_set(min_delay=1, max_delay=60)
+        self.client.max_inflight_messages_set(10)
         
         # Mapeo de tópicos a callbacks
         self.topic_callbacks = {}
@@ -39,19 +44,40 @@ class MQTTService:
         # Estado de conexión
         self.connected = False
         
+        # Evento para sincronización de conexión
+        self.connection_event = threading.Event()
+        
         # Inicializar bloqueo
         self.lock = threading.Lock()
     
     def connect(self):
-        """Conecta al broker MQTT."""
-        try:
-            self.client.connect(self.broker_host, self.broker_port, 60)
-            # Inicia el bucle en un hilo separado
-            self.client.loop_start()
-            return True
-        except Exception as e:
-            logger.error(f"Error al conectar con el broker MQTT: {str(e)}")
-            return False
+        """Conecta al broker MQTT con reintentos."""
+        max_retries = 5
+        retry_delay = 2  # segundos
+        
+        for attempt in range(max_retries):
+            try:
+                logger.info(f"Intentando conectar al broker MQTT (intento {attempt + 1}/{max_retries})")
+                self.client.connect(self.broker_host, self.broker_port, 60)
+                # Inicia el bucle en un hilo separado
+                self.client.loop_start()
+                
+                # Espera hasta que el evento de conexión se active
+                if self.connection_event.wait(timeout=5):
+                    logger.info("Conexión exitosa al broker MQTT")
+                    return True
+                else:
+                    logger.error("Tiempo de espera agotado para establecer conexión")
+                    return False
+            except Exception as e:
+                logger.error(f"Error al conectar con el broker MQTT (intento {attempt + 1}): {str(e)}")
+                if attempt < max_retries - 1:
+                    logger.info(f"Reintentando en {retry_delay} segundos...")
+                    time.sleep(retry_delay)
+                    retry_delay *= 2  # Incrementa exponencialmente el delay
+                else:
+                    logger.error("Todos los intentos de conexión fallaron")
+                    return False
     
     def disconnect(self):
         """Desconecta del broker MQTT."""
@@ -63,6 +89,8 @@ class MQTTService:
         if rc == 0:
             logger.info("Conectado al broker MQTT")
             self.connected = True
+            # Notifica que la conexión se estableció
+            self.connection_event.set()
         else:
             logger.error(f"Error de conexión con código: {rc}")
             self.connected = False
