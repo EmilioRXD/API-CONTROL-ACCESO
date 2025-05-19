@@ -9,7 +9,7 @@ services:
       - MYSQL_USER=control_user
       - MYSQL_PASSWORD=control_password
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql_data_new:/var/lib/mysql
       - ./backend/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
@@ -24,8 +24,8 @@ services:
     image: eclipse-mosquitto:2.0.18
     container_name: mqtt_server
     ports:
-      - "1883:1883"  # MQTT
-      - "9001:9001"  # Websocket
+      - "1884:1883"  # MQTT
+      - "9002:9001"  # Websocket
     volumes:
       - ./backend/mosquitto/config:/mosquitto/config
       - ./backend/mosquitto/data:/mosquitto/data
@@ -58,7 +58,7 @@ services:
     image: httpd:2.4
     container_name: apache_server
     ports:
-      - "80:80"
+      - "8080:80"
     volumes:
       - ./backend/www:/usr/local/apache2/htdocs/
       - ./backend/apache-conf/extra:/usr/local/apache2/conf/extra

@@ -14,9 +14,9 @@ El sistema está compuesto por los siguientes servicios:
 ### Puertos utilizados
 
 - **Backend API**: 8090
-- **MySQL**: 3306
-- **MQTT**: 1883 (MQTT nativo), 9001 (WebSockets)
-- **Apache**: 80
+- **MySQL**: 3307
+- **MQTT**: 1884 (MQTT nativo), 9002 (WebSockets)
+- **Apache**: 8080
 
 ## Requisitos
 
