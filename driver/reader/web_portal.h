@@ -10,6 +10,7 @@ void serverProcess();
 void handleConfig();
 void handleRoot();
 void handleConnect();
+void handleServer();
 
 bool tryConnect();
 

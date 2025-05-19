@@ -9,7 +9,7 @@ union UID {
   uint32_t integer;
 };
 
-bool checkConnectionPins(int pin1, int pin2);
+
 void PrintActualUID();
 String GetActualUID();
 String ReadBlockFromCard();
