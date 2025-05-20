@@ -22,6 +22,9 @@ enum Mode {
 Mode driver_mode = MODE_CONFIG;
 //funciones de prueba
 
+bool resultado_conexion;
+bool configurado;
+
 //una vez
 void _acceso_permitido() {
   Serial.println("[INFO]: Acceso permitido.");
@@ -51,8 +54,10 @@ void setup() {
 
   InitCardReader();
 
-  bool result = tryConnect();
-  if (result) {
+  configurado = EEPROM.readBool(64);
+
+  resultado_conexion = tryConnect();
+  if (resultado_conexion) {
   Serial.println(GetMacAddress());
     ConnectMQTT();
     driver_mode = MODE_READER;
@@ -62,7 +67,7 @@ void setup() {
 
 void loop() {
   serverProcess();
-  ProcessMQTT();
+  if (configurado) {ProcessMQTT();}
 
   switch (driver_mode) {
 
