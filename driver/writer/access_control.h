@@ -13,6 +13,7 @@ union UID {
 
 void BorrarCedula();
 String Cedula();
+String ReadBlockFromCard();
 void SendDataMQTT(const char* data);
 void ProcessMQTT();
 void ConnectMQTT();
