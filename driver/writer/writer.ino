@@ -69,10 +69,19 @@ void loop() {
   serverProcess();
   if (configurado) {ProcessMQTT();}
 
+  String resultado_escritura;
+  String mensaje;
+
   switch (driver_mode) {
 
   case MODE_READER: {
     if (!Cedula().isEmpty() && ScanCards() == 0) {
+      if (!ReadBlockFromCard().isEmpty())
+      {
+        resultado_escritura = "failure";
+        mensaje = "Ya hay una cédula escrita en la tarjeta.";
+        driver_mode = MODE_SENDER;
+      }
       printActualUID();
       driver_mode = MODE_WRITER;
     }
@@ -81,6 +90,8 @@ void loop() {
   case MODE_WRITER: {
     if (WriteCard(Cedula()) == 0) {
       printBlock2Data();
+      resultado_escritura = "success";
+      mensaje = "Cédula escrita exitosamente";
       HaltReader();
       driver_mode = MODE_SENDER;
     }
@@ -88,9 +99,10 @@ void loop() {
   }
   case MODE_SENDER: {
     JsonDocument doc; 
-    doc["status"] = "success";
+    doc["status"] = resultado_escritura;
     doc["cedula_estudiante"] = Cedula();
     doc["serial"] = GetActualUID();
+    doc["message"] = mensaje;
 
     String jsonResponse;
     serializeJson(doc, jsonResponse); 

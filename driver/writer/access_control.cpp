@@ -57,6 +57,21 @@ bool checkConnectionPins(int pin1, int pin2) {
 }
 
 
+String ReadBlockFromCard() {
+    if (!authenticate_keyA()) {
+    return String();
+  }
+
+  if (mfrc.MIFARE_Read(block_address, block_data_read, &buffer_block_size) != 0) {
+    Serial.println("[ERROR]: Read from block 2 failed.");
+    return String();
+  }
+
+  return String((char *)block_data_read);
+}
+
+
+
 
 
 void msg_callback(char* topic, byte* message, unsigned int length) {
