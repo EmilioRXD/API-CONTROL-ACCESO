@@ -11,7 +11,7 @@
 
 #define SSID_ADDR 0
 #define PASS_ADDR 32
-#define SERVER_IP_ADDR 64
+#define CONFIGURATION_DONE_ADDR 64
 
 
 const byte DNS_PORT = 53;
@@ -22,6 +22,7 @@ const char* apPassword = "12345678";
 static String savedSSID = "";
 static String savedPassword = "";
 static String server_ip = "";
+
 
 DNSServer dnsServer;
 WebServer server(80);
@@ -68,7 +69,7 @@ void borrarCredenciales() {
   // Escribe cadenas vacías en las posiciones de memoria
   EEPROM.writeString(SSID_ADDR, "");
   EEPROM.writeString(PASS_ADDR, "");
-  EEPROM.writeString(SERVER_IP_ADDR, "");
+  EEPROM.writeBool(CONFIGURATION_DONE_ADDR, false);
 
   // Confirma los cambios en la EEPROM
   EEPROM.commit();
@@ -151,6 +152,7 @@ void handleConnect() {
     // Guardar en EEPROM
     EEPROM.writeString(SSID_ADDR, ssid);
     EEPROM.writeString(PASS_ADDR, password);
+    EEPROM.writeBool(CONFIGURATION_DONE_ADDR, true);
     EEPROM.commit();
 
     Serial.println("[INFO] Credenciales guardadas");
