@@ -79,7 +79,7 @@ class Controlador(Base):
     mac = Column(String(17), nullable=False)
     ubicacion = Column(String(255), nullable=False)
     funcion = Column(Enum('LECTOR', 'ESCRITOR', name='funcion_enum'), nullable=False, default='LECTOR')
-    tipo_acceso = Column(Enum('ENTRADA', 'SALIDA', name='tipo_acceso_enum'), nullable=False, default='ENTRADA')
+    tipo_acceso = Column(Enum('ENTRADA', 'SALIDA', 'NO APLICA', name='tipo_acceso_enum'), nullable=False, default='ENTRADA')
 
     # Relaciones
     registros = relationship("Registro", back_populates="controlador", cascade="all, delete-orphan")

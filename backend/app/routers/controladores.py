@@ -12,8 +12,17 @@ router = APIRouter(
 )
 
 @router.get("/", response_model=List[Controlador], dependencies=[Depends(get_current_active_user)])
-def listar_controladores(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    controladores = db.query(ControladorModel).offset(skip).limit(limit).all()
+def listar_controladores(skip: int = 0, limit: int = 100, tipo: str = None, db: Session = Depends(get_db)):
+    query = db.query(ControladorModel)
+    
+    # Si se proporciona el parámetro tipo, filtramos por función
+    if tipo:
+        # Manejar el caso especial para WRITER
+        if tipo == "WRITER":
+            tipo = "ESCRITOR"
+        query = query.filter(ControladorModel.funcion == tipo)
+        
+    controladores = query.offset(skip).limit(limit).all()
     return controladores
 
 # Endpoint para crear controlador sin autenticación
@@ -21,19 +30,28 @@ def listar_controladores(skip: int = 0, limit: int = 100, db: Session = Depends(
 def crear_controlador(controlador: ControladorCreate, db: Session = Depends(get_db)):
     # Verificar si ya existe un controlador con esa MAC
     db_controlador_existente = db.query(ControladorModel).filter(ControladorModel.mac == controlador.mac).first()
-    if db_controlador_existente:
-        raise HTTPException(status_code=400, detail="Ya existe un controlador con esa dirección MAC")
     
-    db_controlador = ControladorModel(
+    if db_controlador_existente:
+        # Si ya existe, actualizar los campos en lugar de lanzar un error
+        db_controlador_existente.ubicacion = controlador.ubicacion
+        db_controlador_existente.funcion = controlador.funcion
+        db_controlador_existente.tipo_acceso = controlador.tipo_acceso
+        
+        db.commit()
+        db.refresh(db_controlador_existente)
+        return db_controlador_existente
+    
+    # Si no existe, crear nuevo controlador
+    nuevo_controlador = ControladorModel(
         mac=controlador.mac,
         ubicacion=controlador.ubicacion,
         funcion=controlador.funcion,
         tipo_acceso=controlador.tipo_acceso
     )
-    db.add(db_controlador)
+    db.add(nuevo_controlador)
     db.commit()
-    db.refresh(db_controlador)
-    return db_controlador
+    db.refresh(nuevo_controlador)
+    return nuevo_controlador
 
 @router.get("/{controlador_id}", response_model=Controlador, dependencies=[Depends(get_current_active_user)])
 def obtener_controlador(controlador_id: int, db: Session = Depends(get_db)):

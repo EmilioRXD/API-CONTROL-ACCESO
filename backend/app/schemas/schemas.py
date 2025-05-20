@@ -11,6 +11,7 @@ class FuncionEnum(str, Enum):
 class TipoAccesoEnum(str, Enum):
     ENTRADA = "ENTRADA"
     SALIDA = "SALIDA"
+    NO_APLICA = "NO APLICA"
 
 class EstadoEnum(str, Enum):
     PAGADO = "PAGADO"

@@ -1,10 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
+from pydantic import BaseModel
 from app.database.database import get_db
 from app.models.models import Configuracion as ConfiguracionModel
 from app.schemas.schemas import Configuracion, ConfiguracionCreate
 from app.auth.auth import get_current_active_user
+
+# Modelo para actualizar solo el valor
+class ActualizarValorConfiguracion(BaseModel):
+    valor: str
 
 router = APIRouter(
     prefix="/configuracion",
@@ -65,6 +70,20 @@ def actualizar_configuracion(config_id: int, configuracion: ConfiguracionCreate,
     db_config.parametro = configuracion.parametro
     db_config.valor = configuracion.valor
     db_config.descripcion = configuracion.descripcion
+    
+    db.commit()
+    db.refresh(db_config)
+    return db_config
+
+@router.patch("/{config_id}/valor", response_model=Configuracion)
+def actualizar_valor_configuracion(config_id: int, actualizacion: ActualizarValorConfiguracion, db: Session = Depends(get_db)):
+    """Actualiza únicamente el valor de una configuración existente."""
+    db_config = db.query(ConfiguracionModel).filter(ConfiguracionModel.id == config_id).first()
+    if db_config is None:
+        raise HTTPException(status_code=404, detail="Configuración no encontrada")
+    
+    # Actualizar solo el valor
+    db_config.valor = actualizacion.valor
     
     db.commit()
     db.refresh(db_config)
