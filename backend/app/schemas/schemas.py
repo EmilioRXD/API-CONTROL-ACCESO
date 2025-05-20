@@ -230,3 +230,16 @@ class RespuestaAsignacion(BaseModel):
     mensaje: str
     serial: Optional[str] = None
     tarjeta_id: Optional[int] = None
+    solicitud_id: Optional[str] = None
+
+# Estado de asignación de tarjeta (para consulta asincrónica)
+class EstadoAsignacion(BaseModel):
+    id: str
+    estudiante_cedula: int
+    estado: str  # pendiente, procesando, completado, fallido
+    mensaje: str
+    fecha_solicitud: str
+    completada: bool
+    tarjeta_id: Optional[int] = None
+    serial: Optional[str] = None
+    fecha_completado: Optional[str] = None

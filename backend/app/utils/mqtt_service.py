@@ -116,9 +116,14 @@ class MQTTService:
             with self.lock:
                 for request_id, request_info in list(self.pending_requests.items()):
                     if request_info['response_topic'] == msg.topic:
+                        # En el enfoque no bloqueante, simplemente almacenamos la respuesta
+                        # y dejamos que el cliente la consulte cuando quiera
+                        request_info['response'] = msg.payload.decode()
+                        request_info['response_time'] = time.time()
+                        
+                        # Si hay un event (compatibilidad con código antiguo), también lo activamos
                         event = request_info.get('event')
                         if event:
-                            request_info['response'] = msg.payload.decode()
                             event.set()
         except Exception as e:
             logger.error(f"Error al procesar mensaje MQTT: {str(e)}")
@@ -182,14 +187,16 @@ class MQTTService:
     def request_card_assignment(self, writer_mac, student_id, timeout=30):
         """
         Solicita la asignación de una tarjeta a un estudiante a través de un ESP32 escritor.
+        Esta versión es NO BLOQUEANTE y devuelve inmediatamente el resultado o None si hay un error inicial.
         
         Args:
             writer_mac: MAC del ESP32 con función ESCRITOR
             student_id: Cédula del estudiante
-            timeout: Tiempo de espera máximo en segundos
+            timeout: Tiempo de espera máximo en segundos (usado solo para auto-limpieza)
             
         Returns:
-            dict: Respuesta del ESP32 o None si hay error o timeout
+            dict: El resultado inmediato de enviar la solicitud (normalmente None hasta que llegue respuesta) 
+                 o un mensaje de error si no se pudo iniciar la solicitud
         """
         # Generar ID único para esta solicitud
         request_id = str(uuid.uuid4())
@@ -198,16 +205,15 @@ class MQTTService:
         request_topic = f"esp32/{writer_mac}/card/assign"
         response_topic = f"esp32/{writer_mac}/card/response"
         
-        # Crear evento para esperar la respuesta
-        event = threading.Event()
-        
-        # Registrar la solicitud pendiente
+        # Registrar la solicitud pendiente - ya no usamos eventos de bloqueo
         with self.lock:
             self.pending_requests[request_id] = {
                 'response_topic': response_topic,
-                'event': event,
                 'response': None,
-                'timestamp': time.time()
+                'timestamp': time.time(),
+                'writer_mac': writer_mac,
+                'student_id': student_id,
+                'processed': False
             }
         
         # Suscribirse al tópico de respuesta si aún no lo está
@@ -227,25 +233,38 @@ class MQTTService:
                 self.pending_requests.pop(request_id, None)
             return None
         
-        # Esperar respuesta o timeout
-        if event.wait(timeout):
-            # Se recibió respuesta
-            with self.lock:
-                response_data = self.pending_requests.pop(request_id, {}).get('response')
-                
-            try:
-                if isinstance(response_data, str):
-                    response_json = json.loads(response_data)
-                    return response_json
-                return response_data
-            except json.JSONDecodeError:
-                logger.error(f"Error al decodificar respuesta JSON: {response_data}")
+        # Devolver el ID de solicitud y no esperar (no bloqueante)
+        return request_id
+        
+    def get_assignment_result(self, request_id):
+        """
+        Obtiene el resultado de una solicitud de asignación de tarjeta.
+        
+        Args:
+            request_id: ID de la solicitud
+            
+        Returns:
+            dict: Respuesta del ESP32 o None si aún no hay respuesta o hubo error
+            None: Si la solicitud no existe
+        """
+        with self.lock:
+            request_info = self.pending_requests.get(request_id)
+            if not request_info:
                 return None
-        else:
-            # Timeout
-            logger.warning(f"Timeout al esperar respuesta del ESP32 {writer_mac}")
-            with self.lock:
-                self.pending_requests.pop(request_id, None)
+            
+            response_data = request_info.get('response')
+            if not response_data:
+                return None
+                
+            # Marcar como procesado pero mantener en la lista para referencias futuras
+            request_info['processed'] = True
+            
+        try:
+            if isinstance(response_data, str):
+                return json.loads(response_data)
+            return response_data
+        except json.JSONDecodeError:
+            logger.error(f"Error al decodificar respuesta JSON: {response_data}")
             return None
     
     def cleanup_expired_requests(self, max_age=60):

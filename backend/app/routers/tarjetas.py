@@ -1,14 +1,20 @@
 from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
 from sqlalchemy.orm import Session
-from typing import List, Optional
-from datetime import date, timedelta
+from typing import List, Optional, Dict
+from datetime import date, timedelta, datetime
 import os
 import json
+import uuid
+import asyncio
+import logging
 from dotenv import load_dotenv
+
+# Configurar logger
+logger = logging.getLogger(__name__)
 
 from app.database.database import get_db
 from app.models.models import Tarjeta as TarjetaModel, Estudiante as EstudianteModel, Controlador as ControladorModel
-from app.schemas.schemas import Tarjeta, TarjetaCreate, AsignacionTarjeta, RespuestaAsignacion, TarjetaDetalle
+from app.schemas.schemas import Tarjeta, TarjetaCreate, AsignacionTarjeta, RespuestaAsignacion, TarjetaDetalle, EstadoAsignacion
 from app.auth.auth import get_current_active_user
 from app.utils.mqtt_service import get_mqtt_service
 
@@ -23,6 +29,10 @@ router = APIRouter(
     tags=["tarjetas"],
     dependencies=[Depends(get_current_active_user)]
 )
+
+# Diccionario para almacenar el estado de las asignaciones de tarjetas
+# Clave: ID de solicitud, Valor: estado de la asignación
+asignaciones_estado: Dict[str, dict] = {}
 
 @router.get("/", response_model=List[TarjetaDetalle])
 def listar_tarjetas(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
@@ -61,13 +71,12 @@ def listar_tarjetas(skip: int = 0, limit: int = 100, db: Session = Depends(get_d
 @router.post("/", response_model=RespuestaAsignacion, status_code=status.HTTP_201_CREATED)
 async def crear_tarjeta(
     asignacion: AsignacionTarjeta,
-    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db)
 ):
     """
     Solicita la asignación de una tarjeta a un estudiante a través de un ESP32 con función ESCRITOR.
-    Este endpoint mantiene la solicitud abierta mientras espera la respuesta del ESP32 o hasta que
-    se agote el tiempo de espera.
+    Este endpoint es bloqueante solo para esta petición, manteniendo el servidor disponible para otras solicitudes.
+    Espera y devuelve el resultado final de la operación (exitosa o fallida).
     """
     # Verificar si el estudiante existe
     estudiante = db.query(EstudianteModel).filter(EstudianteModel.cedula == asignacion.estudiante_cedula).first()
@@ -118,63 +127,95 @@ async def crear_tarjeta(
     fecha_emision = asignacion.fecha_emision or date.today()
     fecha_expiracion = asignacion.fecha_expiracion or (date.today() + timedelta(days=365))  # 1 año por defecto
     
-    # Solicitar asignación de tarjeta al ESP32
-    response = mqtt_service.request_card_assignment(
+    # Generar un ID único para esta solicitud (para rastreo en logs)
+    solicitud_id = str(uuid.uuid4())
+    
+    # Registro en el log del inicio de la solicitud
+    logger.info(f"Iniciando solicitud de asignación {solicitud_id} para estudiante {asignacion.estudiante_cedula}")
+    
+    # Solicitar asignación de tarjeta (con el servicio no bloqueante)
+    solicitud_mqtt = mqtt_service.request_card_assignment(
         asignacion.mac_escritor,
         asignacion.estudiante_cedula,
         MQTT_TIMEOUT
     )
     
-    if not response:
-        # Timeout o error en la comunicación
+    if not solicitud_mqtt:
+        return RespuestaAsignacion(
+            success=False,
+            mensaje="Error al iniciar la comunicación con el dispositivo escritor"
+        )
+    
+    # Esperar la respuesta (bloqueante, pero solo para esta petición)
+    max_intentos = MQTT_TIMEOUT * 2  # Comprobar 2 veces por segundo
+    intentos = 0
+    response_data = None
+    
+    while intentos < max_intentos:
+        # Verificar si hay respuesta disponible
+        response_data = mqtt_service.get_assignment_result(solicitud_mqtt)
+        if response_data:
+            break
+        
+        # Pequeña pausa asíncrona que no bloquea el servidor
+        await asyncio.sleep(0.5)  # 500ms entre intentos
+        intentos += 1
+    
+    # Si no hay respuesta después del timeout
+    if not response_data:
+        logger.warning(f"Timeout al esperar respuesta para solicitud {solicitud_id}")
         return RespuestaAsignacion(
             success=False,
             mensaje=f"No se recibió respuesta del dispositivo escritor en {MQTT_TIMEOUT} segundos"
         )
     
-    # Procesar respuesta del ESP32
-    try:
-        if isinstance(response, str):
-            response_data = json.loads(response)
-        else:
-            response_data = response
+    # Procesar la respuesta
+    status = response_data.get("status")
+    serial = response_data.get("serial")
+    student_id = response_data.get("cedula_estudiante")
+    
+    if status == "success" and serial and str(student_id) == str(asignacion.estudiante_cedula):
+        # Verificar nuevamente que el estudiante no tenga tarjeta activa
+        tarjeta_activa = db.query(TarjetaModel).filter(
+            TarjetaModel.estudiante_cedula == asignacion.estudiante_cedula,
+            TarjetaModel.activa == True
+        ).first()
         
-        status = response_data.get("status")
-        serial = response_data.get("serial")
-        student_id = response_data.get("cedula_estudiante")
-        
-        if status == "success" and serial and str(student_id) == str(asignacion.estudiante_cedula):
-            # Registrar la nueva tarjeta en la base de datos
-            db_tarjeta = TarjetaModel(
-                serial=serial,
-                estudiante_cedula=asignacion.estudiante_cedula,
-                fecha_emision=fecha_emision,
-                fecha_expiracion=fecha_expiracion,
-                activa=True
-            )
-            db.add(db_tarjeta)
-            db.commit()
-            db.refresh(db_tarjeta)
-            
-            # Programar limpieza de solicitudes expiradas
-            background_tasks.add_task(mqtt_service.cleanup_expired_requests)
-            
-            return RespuestaAsignacion(
-                success=True,
-                mensaje="Tarjeta asignada correctamente",
-                serial=serial,
-                tarjeta_id=db_tarjeta.id
-            )
-        else:
+        if tarjeta_activa:
+            logger.warning(f"El estudiante {asignacion.estudiante_cedula} ya tiene una tarjeta activa")
             return RespuestaAsignacion(
                 success=False,
-                mensaje=f"Error en la asignación: {response_data.get('message', 'Error desconocido')}"
+                mensaje="El estudiante ya tiene una tarjeta activa asignada"
             )
-    
-    except Exception as e:
+        
+        # Registrar la nueva tarjeta en la base de datos
+        db_tarjeta = TarjetaModel(
+            serial=serial,
+            estudiante_cedula=asignacion.estudiante_cedula,
+            fecha_emision=fecha_emision,
+            fecha_expiracion=fecha_expiracion,
+            activa=True
+        )
+        db.add(db_tarjeta)
+        db.commit()
+        db.refresh(db_tarjeta)
+        
+        logger.info(f"Tarjeta asignada correctamente para estudiante {asignacion.estudiante_cedula} con serial {serial}")
+        
+        return RespuestaAsignacion(
+            success=True,
+            mensaje="Tarjeta asignada correctamente",
+            serial=serial,
+            tarjeta_id=db_tarjeta.id
+        )
+    else:
+        # Error reportado por el dispositivo
+        error_msg = f"Error en la asignación: {response_data.get('message', 'Error desconocido')}"
+        logger.error(f"{error_msg} para estudiante {asignacion.estudiante_cedula}")
+        
         return RespuestaAsignacion(
             success=False,
-            mensaje=f"Error al procesar la respuesta: {str(e)}"
+            mensaje=error_msg
         )
 
 @router.get("/{tarjeta_id}", response_model=Tarjeta)
@@ -267,3 +308,41 @@ def init_mqtt_service():
     return mqtt_service
 
 # Se eliminó el endpoint duplicado mqtt/asignar ya que su funcionalidad ahora está en el endpoint principal
+
+@router.get("/asignacion/{solicitud_id}", response_model=EstadoAsignacion)
+async def verificar_estado_asignacion(solicitud_id: str):
+    """
+    Verifica el estado actual de una solicitud de asignación de tarjeta.
+    Permite consultar si la operación en segundo plano ha sido completada
+    y cuál fue el resultado.
+    """
+    if solicitud_id not in asignaciones_estado:
+        raise HTTPException(
+            status_code=404,
+            detail="Solicitud de asignación no encontrada"
+        )
+    
+    return asignaciones_estado[solicitud_id]
+
+# Este endpoint ha sido eliminado ya que su funcionalidad ahora está en el endpoint principal POST /tarjetas/
+
+# Función para limpiar estados antiguos (podría ejecutarse periódicamente)
+def limpiar_estados_antiguos(horas: int = 24):
+    """
+    Limpia los estados de asignaciones que ya han sido completados y tienen más de
+    las horas especificadas de antigüedad.
+    """
+    tiempo_limite = datetime.now() - timedelta(hours=horas)
+    
+    # Convertir a timestamp para comparación
+    limite_str = tiempo_limite.isoformat()
+    
+    # Identificar claves a eliminar
+    claves_a_eliminar = []
+    for clave, estado in asignaciones_estado.items():
+        if estado["completada"] and estado.get("fecha_completado", "") < limite_str:
+            claves_a_eliminar.append(clave)
+    
+    # Eliminar las claves identificadas
+    for clave in claves_a_eliminar:
+        del asignaciones_estado[clave]
