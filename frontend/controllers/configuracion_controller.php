@@ -57,3 +57,57 @@ function actualizarConfiguracionAPI($datos) {
     $api = new ApiClient();
     return $api->put('/configuracion/', $datos);
 }
+
+/**
+ * Guarda la configuración de acceso y período de gracia
+ * 
+ * @param array $datos Datos de configuración de acceso
+ * @return array|false Respuesta de la API o false si hay error
+ */
+function guardarConfiguracionAcceso($datos) {
+    // Verificar y formatear los datos
+    $api = new ApiClient();
+    $exito = true;
+    $resultados = [];
+    
+    // Procesar PERIODO_GRACIA_DIAS (ID=1)
+    if (isset($datos['PERIODO_GRACIA_DIAS'])) {
+        // Asegurar que sea un número entero y esté entre 0 y 30
+        $diasGracia = max(0, min(30, intval($datos['PERIODO_GRACIA_DIAS'])));
+        
+        // Usar PATCH con el ID específico y solo el valor
+        $data = ['valor' => (string)$diasGracia];
+        $resultado = $api->patch('/configuracion/1/valor', $data);
+        
+        if (!$resultado) {
+            $exito = false;
+        }
+        $resultados[] = $resultado;
+    }
+    
+    return $exito ? $resultados : false;
+}
+
+/**
+ * Guarda la configuración de validación de cuotas
+ * 
+ * @param array $datos Datos de configuración de validación
+ * @return array|false Respuesta de la API o false si hay error
+ */
+function guardarConfiguracionValidacion($datos) {
+    // Verificar y formatear los datos
+    $api = new ApiClient();
+    
+    // Procesar BLOQUEO_ACCESO_VENCIDOS (validación de cuotas, ID=2)
+    $validacion = 'false'; // Por defecto está desactivado
+    
+    if (isset($datos['BLOQUEO_ACCESO_VENCIDOS']) && $datos['BLOQUEO_ACCESO_VENCIDOS'] === 'true') {
+        $validacion = 'true';
+    }
+    
+    // Usar PATCH con el ID específico y solo el valor
+    $data = ['valor' => $validacion];
+    $resultado = $api->patch('/configuracion/2/valor', $data);
+    
+    return $resultado ?: false;
+}

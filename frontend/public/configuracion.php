@@ -9,6 +9,9 @@ requireAuth();
 // Mostrar la barra de navegación
 $showNavbar = true;
 
+// Acciones permitidas
+$acciones_permitidas = ['index', 'guardar_local', 'guardar_api', 'guardar_acceso', 'guardar_validacion', 'guardar_configuracion'];
+
 // Obtener la acción del query string
 $action = isset($_GET['action']) ? $_GET['action'] : 'index';
 
@@ -119,6 +122,135 @@ switch ($action) {
         }
         break;
         
+    case 'guardar_acceso':
+        // Procesar datos del formulario para configuraciones de acceso
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Validación básica
+            $periodo_gracia = filter_input(INPUT_POST, 'PERIODO_GRACIA_DIAS', FILTER_SANITIZE_NUMBER_INT);
+            if ($periodo_gracia === null || $periodo_gracia === false) {
+                $error_message_acceso = 'El período de gracia debe ser un número válido.';
+            } else {
+                // Procesar la actualización
+                $datos = $_POST;
+                $result = guardarConfiguracionAcceso($datos);
+                
+                if ($result) {
+                    $success_message_acceso = 'Configuración de acceso actualizada correctamente.';
+                } else {
+                    // Obtener error si está disponible
+                    $apiError = getApiError();
+                    $error_message_acceso = 'Error al actualizar la configuración de acceso.';
+                    
+                    if ($apiError && isset($apiError['response']['detail'])) {
+                        $error_message_acceso .= ' ' . $apiError['response']['detail'];
+                    }
+                }
+            }
+            
+            // Obtener la configuración actualizada
+            $configuracion = getConfiguracion();
+            
+            // Incluir la plantilla de cabecera
+            require_once __DIR__ . '/../views/templates/header.php';
+            
+            // Incluir la vista del formulario con mensaje
+            require_once __DIR__ . '/../views/configuracion/form.php';
+        } else {
+            // Si no es POST, redirigir al formulario
+            header('Location: ' . URL_BASE . '/public/configuracion.php');
+            exit;
+        }
+        break;
+        
+    case 'guardar_validacion':
+        // Procesar datos del formulario para configuración de validación de cuotas
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Procesar la actualización
+            $datos = $_POST;
+            $result = guardarConfiguracionValidacion($datos);
+            
+            if ($result) {
+                $success_message_validacion = 'Configuración de validación de cuotas actualizada correctamente.';
+            } else {
+                // Obtener error si está disponible
+                $apiError = getApiError();
+                $error_message_validacion = 'Error al actualizar la configuración de validación de cuotas.';
+                
+                if ($apiError && isset($apiError['response']['detail'])) {
+                    $error_message_validacion .= ' ' . $apiError['response']['detail'];
+                }
+            }
+            
+            // Obtener la configuración actualizada
+            $configuracion = getConfiguracion();
+            
+            // Incluir la plantilla de cabecera
+            require_once __DIR__ . '/../views/templates/header.php';
+            
+            // Incluir la vista del formulario con mensaje
+            require_once __DIR__ . '/../views/configuracion/form.php';
+        } else {
+            // Si no es POST, redirigir al formulario
+            header('Location: ' . URL_BASE . '/public/configuracion.php');
+            exit;
+        }
+        break;
+        
+    case 'guardar_configuracion':
+        // Procesar datos del formulario combinado (validación de cuotas + período de gracia)
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $error = false;
+            
+            // Procesar la configuración de validación de cuotas
+            $resultValidacion = guardarConfiguracionValidacion($_POST);
+            if (!$resultValidacion) {
+                $apiError = getApiError();
+                $error_message_validacion = 'Error al actualizar la configuración de validación de cuotas.';
+                
+                if ($apiError && isset($apiError['response']['detail'])) {
+                    $error_message_validacion .= ' ' . $apiError['response']['detail'];
+                }
+                $error = true;
+            }
+            
+            // Procesar la configuración de período de gracia
+            $periodo_gracia = filter_input(INPUT_POST, 'PERIODO_GRACIA_DIAS', FILTER_SANITIZE_NUMBER_INT);
+            if ($periodo_gracia === null || $periodo_gracia === false) {
+                $error_message_acceso = 'El período de gracia debe ser un número válido.';
+                $error = true;
+            } else {
+                $resultAcceso = guardarConfiguracionAcceso($_POST);
+                if (!$resultAcceso) {
+                    $apiError = getApiError();
+                    $error_message_acceso = 'Error al actualizar la configuración de acceso.';
+                    
+                    if ($apiError && isset($apiError['response']['detail'])) {
+                        $error_message_acceso .= ' ' . $apiError['response']['detail'];
+                    }
+                    $error = true;
+                }
+            }
+            
+            // Mostrar mensaje de éxito o error
+            if (!$error) {
+                $success_message_validacion = 'Configuración guardada correctamente.';
+            }
+            
+            // Obtener la configuración actualizada
+            $configuracion = getConfiguracion();
+            
+            // Incluir la plantilla de cabecera
+            require_once __DIR__ . '/../views/templates/header.php';
+            
+            // Incluir la vista del formulario con mensaje
+            require_once __DIR__ . '/../views/configuracion/form.php';
+        } else {
+            // Si no es POST, redirigir al formulario
+            header('Location: ' . URL_BASE . '/public/configuracion.php');
+            exit;
+        }
+        break;
+        
     default:
         // Acción desconocida, redirigir a la configuración
         header('Location: ' . URL_BASE . '/public/configuracion.php');
@@ -126,9 +258,5 @@ switch ($action) {
 }
 
 // Incluir la plantilla de pie de página
-if ($action != 'guardar_local' && $action != 'guardar_api') {
-    require_once __DIR__ . '/../views/templates/footer.php';
-} else {
-    require_once __DIR__ . '/../views/templates/footer.php';
-}
+require_once __DIR__ . '/../views/templates/footer.php';
 ?>

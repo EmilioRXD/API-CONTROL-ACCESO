@@ -1,8 +1,5 @@
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="mb-4">
     <h2>Gestión de Tarjetas</h2>
-    <a href="<?php echo URL_BASE; ?>/public/tarjetas.php?action=create" class="btn btn-success">
-        <i class="fas fa-plus"></i> Asignar Nueva Tarjeta
-    </a>
 </div>
 
 <div class="card">

@@ -103,6 +103,24 @@ function desactivarTarjeta($id) {
 }
 
 /**
+ * Obtiene la lista de controladores disponibles desde la API
+ * 
+ * @param int $skip Registros a omitir para paginación
+ * @param int $limit Límite de registros a obtener
+ * @return array Lista de controladores
+ */
+function getControladores($skip = 0, $limit = 100) {
+    $api = new ApiClient();
+    $params = [
+        'skip' => $skip,
+        'limit' => $limit
+    ];
+    
+    $controladores = $api->get('/controladores/', $params);
+    return $controladores ?: [];
+}
+
+/**
  * Obtiene la lista de escritores de tarjetas (controladores)
  * 
  * @return array Lista de controladores

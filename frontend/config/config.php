@@ -2,7 +2,7 @@
 session_start();
 
 // Configuración de la API
-define('API_BASE_URL', 'http://localhost:8000'); // Ajustar según la ubicación de tu API
+define('API_BASE_URL', 'http://localhost:8090'); // Ajustar según la ubicación de tu API
 define('API_TOKEN_ENDPOINT', '/token');
 define('API_TIMEOUT', 30);
 
