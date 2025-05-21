@@ -76,8 +76,8 @@ switch ($action) {
                 
                 // Definir cabeceras y columnas
                 $titulo = 'Reporte de Estudiantes con Tarjetas';
-                $cabeceras = ['Cédula', 'Nombre', 'Apellido', 'Carrera', 'Tarjeta'];
-                $columnas = ['cedula', 'nombre', 'apellido', 'carrera', 'tiene_tarjeta'];
+                $cabeceras = ['Cédula', 'Nombre', 'Apellido', 'Carrera', 'Serial Tarjeta', 'Fecha Emisión', 'Fecha Expiración', 'Estado Tarjeta'];
+                $columnas = ['cedula', 'nombre', 'apellido', 'carrera', 'serial_tarjeta', 'fecha_emision', 'fecha_expiracion', 'estado_tarjeta'];
                 
                 break;
                 
@@ -112,8 +112,8 @@ switch ($action) {
                 
                 // Definir cabeceras y columnas
                 $titulo = 'Reporte de Pagos';
-                $cabeceras = ['ID', 'Estudiante', 'Cuota', 'Estado', 'Fecha Creación', 'Fecha Pago'];
-                $columnas = ['id', 'estudiante_cedula', 'cuota_id', 'estado', 'fecha_creacion', 'fecha_pago'];
+                $cabeceras = ['ID', 'Cédula Estudiante', 'Nombre', 'Apellido', 'Cuota', 'Estado', 'Fecha Vencimiento'];
+                $columnas = ['id', 'estudiante_cedula', 'nombre_estudiante', 'apellido_estudiante', 'nombre_cuota', 'estado', 'fecha_vencimiento'];
                 
                 break;
                 

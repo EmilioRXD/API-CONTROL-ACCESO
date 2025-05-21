@@ -32,7 +32,6 @@
                         <th>Nombre</th>
                         <th>Apellido</th>
                         <th>Correo Electrónico</th>
-                        <th>Estado</th>
                         <th class="actions-column">Acciones</th>
                     </tr>
                 </thead>
@@ -43,13 +42,6 @@
                         <td><?php echo htmlspecialchars($usuario['nombre']); ?></td>
                         <td><?php echo htmlspecialchars($usuario['apellido']); ?></td>
                         <td><?php echo htmlspecialchars($usuario['correo_electronico']); ?></td>
-                        <td>
-                            <?php if (isset($usuario['activo']) && $usuario['activo']): ?>
-                            <span class="badge bg-success">Activo</span>
-                            <?php else: ?>
-                            <span class="badge bg-danger">Inactivo</span>
-                            <?php endif; ?>
-                        </td>
                         <td>
                             <a href="<?php echo URL_BASE; ?>/public/usuarios.php?action=view&id=<?php echo $usuario['id']; ?>" 
                                class="btn btn-sm btn-info" title="Ver detalles">

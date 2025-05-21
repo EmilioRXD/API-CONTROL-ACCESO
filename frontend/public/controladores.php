@@ -15,11 +15,11 @@ $action = isset($_GET['action']) ? $_GET['action'] : 'index';
 // Procesar la acción
 switch ($action) {
     case 'index':
-        // Obtener el tipo de filtro si existe
-        $tipo = isset($_GET['tipo']) ? $_GET['tipo'] : null;
+        // Obtener la función de filtro si existe
+        $funcion = isset($_GET['funcion']) ? $_GET['funcion'] : null;
         
         // Listar controladores
-        $controladores = getControladores(0, 100, $tipo);
+        $controladores = getControladores(0, 100, $funcion);
         
         // Incluir la plantilla de cabecera
         require_once __DIR__ . '/../views/templates/header.php';

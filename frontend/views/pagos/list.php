@@ -14,7 +14,7 @@
         <div class="row mb-3">
             <div class="col-md-8">
                 <div class="input-group">
-                    <input type="text" id="filtro" class="form-control" placeholder="Buscar pago..." onkeyup="filtrarTabla()">
+                    <input type="text" id="filtro" class="form-control" placeholder="Buscar pago..." data-table-filter="tabla-pagos">
                     <button class="btn btn-outline-secondary" type="button">
                         <i class="fas fa-search"></i>
                     </button>
@@ -36,13 +36,12 @@
         <!-- Tabla de pagos -->
         <?php if (count($pagos) > 0): ?>
         <div class="table-responsive">
-            <table class="table table-striped table-hover">
+            <table id="tabla-pagos" class="table paginated-table table-striped table-hover">
                 <thead>
                     <tr>
                         <th>ID</th>
                         <th>Estudiante</th>
                         <th>Cuota</th>
-                        <th>Fecha Creación</th>
                         <th>Estado</th>
                         <th class="actions-column">Acciones</th>
                     </tr>
@@ -77,7 +76,6 @@
                             }
                             ?>
                         </td>
-                        <td><?php echo htmlspecialchars($pago['fecha_creacion']); ?></td>
                         <td>
                             <?php if ($pago['estado'] === 'PAGADO'): ?>
                             <span class="badge bg-success">Pagado</span>

@@ -11,7 +11,7 @@
         <div class="row mb-3">
             <div class="col-md-6">
                 <div class="input-group">
-                    <input type="text" id="filtro" class="form-control" placeholder="Buscar tarjeta..." onkeyup="filtrarTabla()">
+                    <input type="text" id="filtro" class="form-control" placeholder="Buscar tarjeta..." data-table-filter="tabla-tarjetas">
                     <button class="btn btn-outline-secondary" type="button">
                         <i class="fas fa-search"></i>
                     </button>
@@ -22,7 +22,7 @@
         <!-- Tabla de tarjetas -->
         <?php if (count($tarjetas) > 0): ?>
         <div class="table-responsive">
-            <table class="table table-striped table-hover">
+            <table id="tabla-tarjetas" class="table paginated-table table-striped table-hover">
                 <thead>
                     <tr>
                         <th>ID</th>

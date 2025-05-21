@@ -4,6 +4,9 @@
             <div class="card-header bg-primary text-white text-center">
                 <h4>Iniciar Sesión</h4>
             </div>
+            <div class="text-center mt-3 mb-3">
+                <img src="<?php echo URL_BASE; ?>/assets/img/universidad_logo.png" alt="Logo Universidad" height="80" class="img-fluid">
+            </div>
             <div class="card-body">
                 <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
                     <?php if (isset($error_message)): ?>

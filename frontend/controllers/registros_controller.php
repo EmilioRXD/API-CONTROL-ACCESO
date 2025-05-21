@@ -19,86 +19,91 @@ function getRegistros($skip = 0, $limit = 20, $filtros = [], $sort = '', $order 
     
     $api = new ApiClient();
     
-    // Obtener todos los registros (sin filtros en la API)
-    $todosRegistros = $api->get('/registros/', ['limit' => 1000]);
-    $todosRegistros = $todosRegistros ?: [];
+    // Obtener todos los registros sin filtrar
+    $registros = $api->get('/registros/', ['skip' => 0, 'limit' => 500]);
     
-    // Procesar filtros por columna (adicionales a los filtros principales)
-    $columnFilters = [];
-    foreach ($_GET as $key => $value) {
-        if (strpos($key, 'filter_') === 0 && !empty($value)) {
-            $columnName = substr($key, 7); // Quitar 'filter_'
-            $columnFilters[$columnName] = $value;
-        }
+    // Si no hay registros, devolver un array vacío
+    if (!$registros) {
+        return [];
     }
     
-    // Aplicamos filtros principales localmente
-    $registrosFiltrados = aplicarFiltrosLocalmente($todosRegistros, $filtros);
+    // Si es un objeto único, convertirlo a array
+    if (is_object($registros) && isset($registros->id)) {
+        $registros = [$registros];
+    }
     
-    // Aplicamos filtros de columna
-    if (!empty($columnFilters)) {
-        $registrosFiltrados = array_filter($registrosFiltrados, function($registro) use ($columnFilters) {
-            foreach ($columnFilters as $columna => $valorFiltro) {
-                // Si la columna existe en el registro
-                if (isset($registro[$columna])) {
-                    // Convertir a string para comparación
-                    $valorRegistro = (string)$registro[$columna];
-                    
-                    // Si no contiene el texto del filtro, excluir
-                    if (stripos($valorRegistro, $valorFiltro) === false) {
-                        return false;
-                    }
-                } else {
-                    // Si la columna no existe, excluir
-                    return false;
+    // Aplicar filtros en PHP
+    if (!empty($filtros)) {
+        $registrosFiltrados = [];
+        
+        foreach ($registros as $registro) {
+            $incluir = true;
+            
+            // Filtro por fecha de inicio
+            if (!empty($filtros['fecha_inicio']) && isset($registro['fecha_hora'])) {
+                $fechaRegistro = substr($registro['fecha_hora'], 0, 10); // Extraer YYYY-MM-DD
+                if ($fechaRegistro < $filtros['fecha_inicio']) {
+                    $incluir = false;
                 }
             }
-            return true;
-        });
+            
+            // Filtro por fecha de fin
+            if ($incluir && !empty($filtros['fecha_fin']) && isset($registro['fecha_hora'])) {
+                $fechaRegistro = substr($registro['fecha_hora'], 0, 10); // Extraer YYYY-MM-DD
+                if ($fechaRegistro > $filtros['fecha_fin']) {
+                    $incluir = false;
+                }
+            }
+            
+            // Filtro por acceso permitido
+            if ($incluir && isset($filtros['acceso_permitido']) && $filtros['acceso_permitido'] !== '' && isset($registro['acceso_permitido'])) {
+                $acceso_permitido_filtro = $filtros['acceso_permitido'] === true || $filtros['acceso_permitido'] === '1' || $filtros['acceso_permitido'] === 1;
+                if ($registro['acceso_permitido'] != $acceso_permitido_filtro) {
+                    $incluir = false;
+                }
+            }
+            
+            // Filtro por ubicación del controlador
+            if ($incluir && !empty($filtros['ubicacion_controlador']) && isset($registro['ubicacion_controlador'])) {
+                if ($registro['ubicacion_controlador'] != $filtros['ubicacion_controlador']) {
+                    $incluir = false;
+                }
+            }
+            
+            // Filtro por tipo de acceso (ENTRADA/SALIDA)
+            if ($incluir && !empty($filtros['tipo_acceso']) && isset($registro['tipo_acceso_controlador'])) {
+                if (strtoupper($registro['tipo_acceso_controlador']) != strtoupper($filtros['tipo_acceso'])) {
+                    $incluir = false;
+                }
+            }
+            
+            if ($incluir) {
+                $registrosFiltrados[] = $registro;
+            }
+        }
         
-        // Reindexamos el array
-        $registrosFiltrados = array_values($registrosFiltrados);
+        $registros = $registrosFiltrados;
     }
     
-    // Ordenar los resultados si se especifica
+    // Ordenar registros si se especifica
     if (!empty($sort)) {
-        usort($registrosFiltrados, function($a, $b) use ($sort, $order) {
-            // Si la columna no existe en alguno de los registros
+        usort($registros, function($a, $b) use ($sort, $order) {
             if (!isset($a[$sort]) || !isset($b[$sort])) {
                 return 0;
             }
             
-            $valorA = $a[$sort];
-            $valorB = $b[$sort];
-            
-            // Ordenamiento para fechas
-            if (strpos($sort, 'fecha') !== false || $sort === 'fecha_hora') {
-                $valorA = strtotime($valorA) ?: 0;
-                $valorB = strtotime($valorB) ?: 0;
-            }
-            
-            // Ordenamiento para valores booleanos
-            if (is_bool($valorA) || $valorA === '1' || $valorA === '0' || $valorA === 1 || $valorA === 0) {
-                $valorA = (bool)$valorA ? 1 : 0;
-                $valorB = (bool)$valorB ? 1 : 0;
-            }
-            
-            // Dirección de ordenamiento
-            if ($order === 'asc') {
-                return $valorA <=> $valorB;
-            } else {
-                return $valorB <=> $valorA;
-            }
+            $cmp = strcmp($a[$sort], $b[$sort]);
+            return $order === 'desc' ? -$cmp : $cmp;
+        });
+    } else {
+        // Por defecto, ordenar por ID descendente (más recientes primero)
+        usort($registros, function($a, $b) {
+            return $b['id'] - $a['id'];
         });
     }
     
-    // Obtener el total de registros para información
-    $totalRegistros = count($registrosFiltrados);
-    
-    // Aplicamos paginación localmente
-    $registrosPaginados = aplicarPaginacion($registrosFiltrados, $skip, $limit);
-    
-    return $registrosPaginados;
+    // Aplicar paginación
+    return array_slice($registros, $skip, $limit);
 }
 
 /**
@@ -160,7 +165,7 @@ function generarInformeRegistros($filtros = [], $formato = 'pdf') {
         $pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8');
         
         // Configurar PDF
-        $pdf->SetCreator('Sistema de Control de Acceso y Pagos');
+        $pdf->SetCreator('Sistema de Control de Acceso');
         $pdf->SetAuthor('Administrador');
         $pdf->SetTitle($titulo);
         $pdf->SetSubject('Informe de Registros de Acceso');

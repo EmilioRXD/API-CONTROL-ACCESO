@@ -71,54 +71,93 @@ function getReporteEstudiantesTarjetas($filtros = []) {
     $api = new ApiClient();
     
     // Obtener todos los estudiantes
-    $params = [
-        'limit' => isset($filtros['limit']) ? $filtros['limit'] : 1000
-    ];
+    $estudiantes = $api->get('/estudiantes/', ['limit' => 1000]);
     
-    if (isset($filtros['carrera_id']) && !empty($filtros['carrera_id'])) {
-        $params['carrera_id'] = $filtros['carrera_id'];
+    // Si es un objeto único, convertirlo a array
+    if (is_object($estudiantes) && isset($estudiantes->cedula)) {
+        $estudiantes = [$estudiantes];
     }
     
-    $estudiantes = $api->get('/estudiantes/', $params) ?: [];
+    // Si no hay estudiantes, devolver un array vacío
+    if (!$estudiantes) {
+        $estudiantes = [];
+    }
     
-    // Obtener todas las tarjetas activas
-    $tarjetas = $api->get('/tarjetas/', ['activa' => 'true']) ?: [];
-    
-    // Crear un mapa de cedulas de estudiantes con tarjetas
-    $estudiantesConTarjeta = [];
-    foreach ($tarjetas as $tarjeta) {
-        if (isset($tarjeta['estudiante_cedula'])) {
-            $estudiantesConTarjeta[$tarjeta['estudiante_cedula']] = true;
+    // Crear un mapa de estudiantes por cédula para acceso rápido
+    $estudiantesPorCedula = [];
+    foreach ($estudiantes as $estudiante) {
+        if (isset($estudiante['cedula'])) {
+            $estudiantesPorCedula[$estudiante['cedula']] = $estudiante;
         }
+    }
+    
+    // Obtener todas las tarjetas
+    $tarjetas = $api->get('/tarjetas/', ['limit' => 1000]);
+    
+    // Si es un objeto único, convertirlo a array
+    if (is_object($tarjetas) && isset($tarjetas->id)) {
+        $tarjetas = [$tarjetas];
+    }
+    
+    // Si no hay tarjetas, devolver un array vacío
+    if (!$tarjetas) {
+        $tarjetas = [];
     }
     
     // Preparar datos del reporte
     $reporteData = [];
-    foreach ($estudiantes as $estudiante) {
-        $tieneTarjeta = isset($estudiantesConTarjeta[$estudiante['cedula']]) ? true : false;
+    
+    // Procesar solo estudiantes con tarjeta
+    foreach ($tarjetas as $tarjeta) {
+        if (!isset($tarjeta['estudiante_cedula'])) {
+            continue;
+        }
         
-        // Si el filtro de tarjeta está especificado, filtrar según corresponda
-        if (isset($filtros['tiene_tarjeta'])) {
-            if (($filtros['tiene_tarjeta'] === '1' && !$tieneTarjeta) || 
-                ($filtros['tiene_tarjeta'] === '0' && $tieneTarjeta)) {
-                continue; // Saltar este estudiante si no cumple con el filtro
+        $cedula = $tarjeta['estudiante_cedula'];
+        
+        // Filtrar por carrera si es necesario
+        if (isset($filtros['carrera_id']) && !empty($filtros['carrera_id'])) {
+            // Si tenemos los datos del estudiante, verificar la carrera
+            if (isset($estudiantesPorCedula[$cedula]) && 
+                isset($estudiantesPorCedula[$cedula]['id_carrera']) && 
+                $estudiantesPorCedula[$cedula]['id_carrera'] != $filtros['carrera_id']) {
+                continue; // Saltar este estudiante si no coincide con la carrera filtrada
             }
         }
         
-        // Obtener el nombre de la carrera
-        $carreraNombre = '';
-        if (isset($estudiante['carrera']) && isset($estudiante['carrera']['nombre'])) {
-            $carreraNombre = $estudiante['carrera']['nombre'];
+        // Obtener los datos del estudiante si están disponibles
+        if (isset($estudiantesPorCedula[$cedula])) {
+            $estudiante = $estudiantesPorCedula[$cedula];
+            
+            // Obtener el nombre de la carrera
+            $carreraNombre = isset($estudiante['nombre_carrera']) ? $estudiante['nombre_carrera'] : 'N/A';
+            
+            // Crear entrada para el reporte
+            $reporteData[] = [
+                'cedula' => $estudiante['cedula'],
+                'nombre' => $estudiante['nombre'],
+                'apellido' => $estudiante['apellido'],
+                'carrera' => $carreraNombre,
+                'serial_tarjeta' => $tarjeta['serial'],
+                'fecha_emision' => $tarjeta['fecha_emision'],
+                'fecha_expiracion' => $tarjeta['fecha_expiracion'],
+                'estado_tarjeta' => $tarjeta['activa'] ? 'Activa' : 'Inactiva'
+            ];
         }
-        
-        // Crear entrada para el reporte
-        $reporteData[] = [
-            'cedula' => $estudiante['cedula'],
-            'nombre' => $estudiante['nombre'],
-            'apellido' => $estudiante['apellido'],
-            'carrera' => $carreraNombre,
-            'tiene_tarjeta' => $tieneTarjeta
-        ];
+        // Si no se encuentran los datos del estudiante, usar los datos de la tarjeta
+        else if (isset($tarjeta['nombre_estudiante']) && isset($tarjeta['apellido_estudiante'])) {
+            // Crear entrada para el reporte con los datos disponibles en la tarjeta
+            $reporteData[] = [
+                'cedula' => $tarjeta['estudiante_cedula'],
+                'nombre' => $tarjeta['nombre_estudiante'],
+                'apellido' => $tarjeta['apellido_estudiante'],
+                'carrera' => 'N/A', // No tenemos esta información desde la tarjeta
+                'serial_tarjeta' => $tarjeta['serial'],
+                'fecha_emision' => $tarjeta['fecha_emision'],
+                'fecha_expiracion' => $tarjeta['fecha_expiracion'],
+                'estado_tarjeta' => $tarjeta['activa'] ? 'Activa' : 'Inactiva'
+            ];
+        }
     }
     
     return $reporteData;
@@ -156,26 +195,52 @@ function getReporteTarjetas($filtros = []) {
 function getReportePagos($filtros = []) {
     $api = new ApiClient();
     
-    // Construir parámetros de filtrado
-    $params = [
-        'limit' => isset($filtros['limit']) ? $filtros['limit'] : 1000
-    ];
+    // Obtener todos los pagos sin filtrar
+    $pagos = $api->get('/pagos/', ['limit' => 1000]);
     
-    if (isset($filtros['estado']) && !empty($filtros['estado'])) {
-        $params['estado'] = $filtros['estado'];
+    // Si no hay pagos, devolver un array vacío
+    if (!$pagos) {
+        return [];
     }
     
-    if (isset($filtros['fecha_inicio']) && !empty($filtros['fecha_inicio'])) {
-        $params['fecha_inicio'] = $filtros['fecha_inicio'];
+    // Si es un objeto único, convertirlo a array
+    if (is_object($pagos) && isset($pagos->id)) {
+        $pagos = [$pagos];
     }
     
-    if (isset($filtros['fecha_fin']) && !empty($filtros['fecha_fin'])) {
-        $params['fecha_fin'] = $filtros['fecha_fin'];
+    // Procesar los filtros localmente
+    $pagosFiltrados = [];
+    
+    foreach ($pagos as $pago) {
+        $incluir = true;
+        
+        // Filtro por estado
+        if (isset($filtros['estado']) && !empty($filtros['estado']) && isset($pago['estado'])) {
+            if (strtoupper($pago['estado']) !== strtoupper($filtros['estado'])) {
+                $incluir = false;
+            }
+        }
+        
+        // Filtro por fecha de vencimiento (inicio)
+        if ($incluir && isset($filtros['fecha_inicio']) && !empty($filtros['fecha_inicio']) && isset($pago['fecha_vencimiento'])) {
+            if ($pago['fecha_vencimiento'] < $filtros['fecha_inicio']) {
+                $incluir = false;
+            }
+        }
+        
+        // Filtro por fecha de vencimiento (fin)
+        if ($incluir && isset($filtros['fecha_fin']) && !empty($filtros['fecha_fin']) && isset($pago['fecha_vencimiento'])) {
+            if ($pago['fecha_vencimiento'] > $filtros['fecha_fin']) {
+                $incluir = false;
+            }
+        }
+        
+        if ($incluir) {
+            $pagosFiltrados[] = $pago;
+        }
     }
     
-    // Obtener pagos
-    $pagos = $api->get('/pagos/', $params);
-    return $pagos ?: [];
+    return $pagosFiltrados;
 }
 
 /**
@@ -298,7 +363,7 @@ function generarPDF($titulo, $cabeceras, $datos, $columnas) {
     $pdf = new TCPDF('L', 'mm', 'LETTER', true, 'UTF-8', false);
     
     // Establecer información del documento
-    $pdf->SetCreator('Sistema de Control de Acceso y Pagos');
+    $pdf->SetCreator('Sistema de Control de Acceso');
     $pdf->SetAuthor('Universidad Tecnológica');
     $pdf->SetTitle($titulo);
     $pdf->SetSubject($titulo);
@@ -347,7 +412,7 @@ function generarPDF($titulo, $cabeceras, $datos, $columnas) {
     // Subtítulo o lema
     $pdf->SetFont('helvetica', 'I', 8);
     $pdf->SetXY(35, 18);
-    $pdf->Cell(100, 5, 'Sistema de Control de Acceso y Pagos', 0, 0, 'L');
+    $pdf->Cell(100, 5, 'Sistema de Control de Acceso', 0, 0, 'L');
     
     // Título del reporte (al lado derecho del encabezado)
     $pdf->SetFont('helvetica', 'B', 12);
@@ -459,7 +524,7 @@ function generarPDF($titulo, $cabeceras, $datos, $columnas) {
     // Agregar pie de página
     $pdf->SetY(-15);
     $pdf->SetFont('helvetica', 'I', 8);
-    $pdf->Cell(0, 10, 'Este reporte fue generado desde el Sistema de Control de Acceso y Pagos.', 0, 0, 'C');
+    $pdf->Cell(0, 10, 'Este reporte fue generado desde el Sistema de Control de Acceso.', 0, 0, 'C');
     
     // Devolver el PDF como string
     return $pdf->Output('', 'S');
@@ -536,8 +601,8 @@ function generarComprobantePDF($datos) {
     $pdf = new TCPDF('P', 'mm', 'LETTER', true, 'UTF-8', false);
     
     // Establecer información del documento
-    $pdf->SetCreator('Sistema de Control de Acceso y Pagos');
-    $pdf->SetAuthor('Sistema de Control de Acceso y Pagos');
+    $pdf->SetCreator('Sistema de Control de Acceso');
+    $pdf->SetAuthor('Sistema de Control de Acceso');
     $pdf->SetTitle('Comprobante de Pago');
     $pdf->SetSubject('Comprobante de Pago');
     $pdf->SetKeywords('Comprobante, Pago, Sistema, Control, Acceso');
@@ -559,7 +624,7 @@ function generarComprobantePDF($datos) {
     $pdf->SetFont('helvetica', 'B', 16);
     $pdf->Cell(0, 10, 'COMPROBANTE DE PAGO', 0, 1, 'C');
     $pdf->SetFont('helvetica', '', 11);
-    $pdf->Cell(0, 6, 'Sistema de Control de Acceso y Pagos', 0, 1, 'C');
+    $pdf->Cell(0, 6, 'Sistema de Control de Acceso', 0, 1, 'C');
     $pdf->Ln(10);
     
     // Detalles del comprobante
@@ -649,7 +714,7 @@ function generarComprobantePDF($datos) {
     // Pie de página
     $pdf->SetY(-30);
     $pdf->SetFont('helvetica', 'I', 8);
-    $pdf->Cell(0, 5, 'Este comprobante fue generado desde el Sistema de Control de Acceso y Pagos.', 0, 1, 'C');
+    $pdf->Cell(0, 5, 'Este comprobante fue generado desde el Sistema de Control de Acceso.', 0, 1, 'C');
     $pdf->Cell(0, 5, 'El presente documento es válido como comprobante de pago.', 0, 1, 'C');
     
     // Devolver el PDF como string

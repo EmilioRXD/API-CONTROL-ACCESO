@@ -14,7 +14,7 @@
         <div class="row mb-3">
             <div class="col-md-6">
                 <div class="input-group">
-                    <input type="text" id="filtro" class="form-control" placeholder="Buscar estudiante..." onkeyup="filtrarTabla()">
+                    <input type="text" id="filtro" class="form-control" placeholder="Buscar estudiante..." data-table-filter="tabla-estudiantes">
                     <button class="btn btn-outline-secondary" type="button">
                         <i class="fas fa-search"></i>
                     </button>
@@ -25,7 +25,7 @@
         <!-- Tabla de estudiantes -->
         <?php if (count($estudiantes) > 0): ?>
         <div class="table-responsive">
-            <table class="table table-striped table-hover">
+            <table id="tabla-estudiantes" class="table paginated-table">
                 <thead>
                     <tr>
                         <th>Cédula</th>

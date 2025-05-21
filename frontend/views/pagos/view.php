@@ -78,11 +78,6 @@
                class="btn btn-info">
                 <i class="fas fa-user-graduate"></i> Ver Estudiante
             </a>
-            
-            <a href="<?php echo URL_BASE; ?>/public/reportes.php?action=generar_comprobante&pago_id=<?php echo $pago['id']; ?>" 
-               class="btn btn-primary" target="_blank">
-                <i class="fas fa-file-pdf"></i> Generar Comprobante
-            </a>
         </div>
     </div>
 </div>

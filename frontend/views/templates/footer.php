@@ -8,5 +8,9 @@
     <script src="<?php echo URL_BASE; ?>/assets/js/scripts.js"></script>
     <!-- Scripts para tablas de datos -->
     <script src="<?php echo URL_BASE; ?>/assets/js/data-tables.js"></script>
+    <!-- Scripts para paginación de tablas -->
+    <script src="<?php echo URL_BASE; ?>/assets/js/pagination.js"></script>
+    <!-- Scripts para utilidades de tablas -->
+    <script src="<?php echo URL_BASE; ?>/assets/js/table-utils.js"></script>
 </body>
 </html>

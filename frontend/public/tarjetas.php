@@ -165,16 +165,23 @@ switch ($action) {
                 exit;
             }
             
-            // Sanitizar y validar datos
-            $datos = [
-                'fecha_emision' => filter_input(INPUT_POST, 'fecha_emision', FILTER_SANITIZE_STRING),
-                'fecha_expiracion' => filter_input(INPUT_POST, 'fecha_expiracion', FILTER_SANITIZE_STRING)
-            ];
-            
-            // Verificar estado activo
-            if (isset($_POST['activa'])) {
-                $datos['activa'] = (bool)$_POST['activa'];
+            // Obtener tarjeta actual primero para tener todos los datos
+            $tarjetaActual = getTarjeta($id);
+            if (!$tarjetaActual) {
+                $_SESSION['flash_message'] = 'No se pudo obtener la información actual de la tarjeta.';
+                $_SESSION['flash_type'] = 'danger';
+                header('Location: ' . URL_BASE . '/public/tarjetas.php');
+                exit;
             }
+            
+            // Crear array con todos los datos necesarios
+            $datos = [
+                'serial' => $tarjetaActual['serial'],
+                'estudiante_cedula' => $tarjetaActual['estudiante_cedula'],
+                'fecha_emision' => filter_input(INPUT_POST, 'fecha_emision', FILTER_SANITIZE_STRING),
+                'fecha_expiracion' => filter_input(INPUT_POST, 'fecha_expiracion', FILTER_SANITIZE_STRING),
+                'activa' => isset($_POST['activa']) ? true : false
+            ];
             
             // Validar que los campos requeridos estén presentes
             if (empty($datos['fecha_emision']) || empty($datos['fecha_expiracion'])) {

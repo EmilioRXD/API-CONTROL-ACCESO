@@ -75,6 +75,7 @@
 </div>
 
 <!-- Historial de accesos con esta tarjeta -->
+
 <div class="card mt-4">
     <div class="card-header bg-info text-white">
         <h5 class="mb-0">Historial de Accesos</h5>
@@ -83,45 +84,80 @@
         <?php 
         // Obtener registros de acceso de esta tarjeta
         $api = new ApiClient();
-        $registros = $api->get('/registros/', ['tarjeta_id' => $tarjeta['id'], 'limit' => 10]);
+        $registros = $api->get('/registros/tarjeta/' . $tarjeta['id']);
         
-        if ($registros && count($registros) > 0):
+        if ($registros && ((is_array($registros) && count($registros) > 0) || is_object($registros))):
+            // Definir las columnas de la tabla
+            $columns = [
+                [
+                    'title' => 'ID',
+                    'field' => 'id'
+                ],
+                [
+                    'title' => 'Estado',
+                    'render' => function($registro) {
+                        $estado = isset($registro['acceso_permitido']) && $registro['acceso_permitido'] ? 
+                            '<span class="badge bg-success">Permitido</span>' : 
+                            '<span class="badge bg-danger">Denegado</span>';
+                        return $estado;
+                    }
+                ],
+                [
+                    'title' => 'Controlador',
+                    'render' => function($registro) {
+                        return isset($registro['ubicacion_controlador']) ? 
+                            htmlspecialchars($registro['ubicacion_controlador']) : 
+                            (isset($registro['id_controlador']) ? 'ID: ' . htmlspecialchars($registro['id_controlador']) : 'N/A');
+                    }
+                ],
+                [
+                    'title' => 'Tipo',
+                    'render' => function($registro) {
+                        return isset($registro['tipo_acceso_controlador']) ? 
+                            htmlspecialchars($registro['tipo_acceso_controlador']) : 'N/A';
+                    }
+                ],
+                [
+                    'title' => 'Fecha/Hora',
+                    'render' => function($registro) {
+                        if (!empty($registro['fecha_hora'])) {
+                            $fecha_hora = new DateTime($registro['fecha_hora']);
+                            return htmlspecialchars($fecha_hora->format('d/m/Y H:i:s')); 
+                        } else {
+                            return 'N/A';
+                        }
+                    }
+                ]
+            ];
+            
+            // Renderizar la tabla estándar sin paginación
+            echo '<div class="table-responsive">';
+            echo '<table class="table table-striped" id="historial-accesos-table">';
+            echo '<thead><tr>';
+            foreach ($columns as $column) {
+                echo '<th>' . $column['title'] . '</th>';
+            }
+            echo '</tr></thead><tbody>';
+            
+            foreach ($registros as $registro) {
+                echo '<tr>';
+                foreach ($columns as $column) {
+                    echo '<td>';
+                    if (isset($column['render']) && is_callable($column['render'])) {
+                        echo $column['render']($registro);
+                    } elseif (isset($column['field']) && isset($registro[$column['field']])) {
+                        echo htmlspecialchars($registro[$column['field']]);
+                    } else {
+                        echo 'N/A';
+                    }
+                    echo '</td>';
+                }
+                echo '</tr>';
+            }
+            
+            echo '</tbody></table></div>';
+        else:
         ?>
-        <div class="table-responsive">
-            <table class="table table-striped table-sm">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Tipo</th>
-                        <th>Controlador</th>
-                        <th>Fecha/Hora</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($registros as $registro): ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($registro['id']); ?></td>
-                        <td>
-                            <?php if (isset($registro['tipo']) && $registro['tipo'] == 'ENTRADA'): ?>
-                            <span class="badge bg-success">Entrada</span>
-                            <?php else: ?>
-                            <span class="badge bg-danger">Salida</span>
-                            <?php endif; ?>
-                        </td>
-                        <td>
-                            <?php 
-                            echo isset($registro['controlador_nombre']) ? 
-                                 htmlspecialchars($registro['controlador_nombre']) : 
-                                 (isset($registro['controlador_id']) ? 'ID: ' . htmlspecialchars($registro['controlador_id']) : 'N/A'); 
-                            ?>
-                        </td>
-                        <td><?php echo htmlspecialchars($registro['fecha_hora']); ?></td>
-                    </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-        <?php else: ?>
         <p class="text-muted">No hay registros de acceso para esta tarjeta.</p>
         <?php endif; ?>
     </div>

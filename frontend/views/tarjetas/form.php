@@ -22,7 +22,7 @@
             <div class="mb-3">
                 <label for="estudiante_cedula" class="form-label">Cédula del Estudiante</label>
                 <?php if (isset($tarjeta['estudiante_cedula']) && !empty($tarjeta['estudiante_cedula'])): ?>
-                    <input type="text" class="form-control" id="estudiante_cedula" 
+                    <input type="text" class="form-control bg-light text-muted" id="estudiante_cedula" 
                            value="<?php echo htmlspecialchars($tarjeta['estudiante_cedula']); ?>" 
                            readonly disabled>
                     <input type="hidden" name="estudiante_cedula" value="<?php echo htmlspecialchars($tarjeta['estudiante_cedula']); ?>">
@@ -66,7 +66,7 @@
             <?php else: ?>
             <div class="mb-3">
                 <label class="form-label">Estudiante</label>
-                <input type="text" class="form-control" readonly
+                <input type="text" class="form-control bg-light text-muted" readonly disabled
                        value="<?php 
                               echo isset($tarjeta['nombre_estudiante']) && isset($tarjeta['apellido_estudiante']) ? 
                                    htmlspecialchars($tarjeta['nombre_estudiante'] . ' ' . $tarjeta['apellido_estudiante']) : 
@@ -76,7 +76,7 @@
             
             <div class="mb-3">
                 <label class="form-label">Serial de Tarjeta</label>
-                <input type="text" class="form-control" readonly
+                <input type="text" class="form-control bg-light text-muted" readonly disabled
                        value="<?php echo htmlspecialchars($tarjeta['serial']); ?>">
             </div>
             <?php endif; ?>

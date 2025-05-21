@@ -68,15 +68,4 @@ function eliminarUsuario($id) {
     return $response === null || $response === true || (isset($response['success']) && $response['success']);
 }
 
-/**
- * Activa o desactiva un usuario
- * 
- * @param int $id ID del usuario
- * @param bool $activar true para activar, false para desactivar
- * @return array|false Respuesta de la API o false si hay error
- */
-function cambiarEstadoUsuario($id, $activar = true) {
-    $api = new ApiClient();
-    $endpoint = '/usuarios/' . $id . '/' . ($activar ? 'activar' : 'desactivar');
-    return $api->patch($endpoint, []);
-}
+// Función de cambio de estado de usuario eliminada - Los usuarios no tienen estado

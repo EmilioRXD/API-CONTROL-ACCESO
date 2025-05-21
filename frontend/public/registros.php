@@ -16,7 +16,7 @@ $action = isset($_GET['action']) ? $_GET['action'] : 'index';
 
 // Preparar URL params para paginación y mantener filtros
 $url_params = '';
-foreach (['fecha_inicio', 'fecha_fin', 'ubicacion_controlador'] as $param) {
+foreach (['fecha_inicio', 'fecha_fin', 'ubicacion_controlador', 'tipo_acceso'] as $param) {
     if (isset($_GET[$param]) && !empty($_GET[$param])) {
         $url_params .= '&' . $param . '=' . urlencode($_GET[$param]);
     }
@@ -42,7 +42,8 @@ switch ($action) {
         $filtros = [
             'fecha_inicio' => isset($_GET['fecha_inicio']) ? $_GET['fecha_inicio'] : null,
             'fecha_fin' => isset($_GET['fecha_fin']) ? $_GET['fecha_fin'] : null,
-            'ubicacion_controlador' => isset($_GET['ubicacion_controlador']) ? $_GET['ubicacion_controlador'] : null
+            'ubicacion_controlador' => isset($_GET['ubicacion_controlador']) ? $_GET['ubicacion_controlador'] : null,
+            'tipo_acceso' => isset($_GET['tipo_acceso']) ? $_GET['tipo_acceso'] : null
         ];
         
         // Filtro de acceso permitido (asegurarse de que sea un booleano para la API)

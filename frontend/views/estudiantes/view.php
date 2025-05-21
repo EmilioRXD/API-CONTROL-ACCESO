@@ -59,7 +59,7 @@
         if ($tarjetas && count($tarjetas) > 0):
         ?>
         <div class="table-responsive">
-            <table class="table table-striped table-sm">
+            <table id="tabla-tarjetas-estudiante" class="table paginated-table table-striped table-sm">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -112,7 +112,7 @@
         if ($pagos && count($pagos) > 0):
         ?>
         <div class="table-responsive">
-            <table class="table table-striped table-sm">
+            <table id="tabla-pagos-estudiante" class="table paginated-table table-striped table-sm">
                 <thead>
                     <tr>
                         <th>ID</th>

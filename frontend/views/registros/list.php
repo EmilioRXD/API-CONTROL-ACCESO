@@ -38,6 +38,15 @@
             </div>
             
             <div class="col-md-3">
+                <label for="tipo_acceso" class="form-label">Entrada/Salida</label>
+                <select class="form-select" id="tipo_acceso" name="tipo_acceso">
+                    <option value="">Todos</option>
+                    <option value="ENTRADA" <?php echo (isset($_GET['tipo_acceso']) && strtoupper($_GET['tipo_acceso']) === 'ENTRADA') ? 'selected' : ''; ?>>Entrada</option>
+                    <option value="SALIDA" <?php echo (isset($_GET['tipo_acceso']) && strtoupper($_GET['tipo_acceso']) === 'SALIDA') ? 'selected' : ''; ?>>Salida</option>
+                </select>
+            </div>
+            
+            <div class="col-md-3">
                 <label for="ubicacion_controlador" class="form-label">Ubicación</label>
                 <select class="form-select" id="ubicacion_controlador" name="ubicacion_controlador">
                     <option value="">Todas</option>
@@ -65,36 +74,30 @@
 <div class="card">
     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Listado de Registros</h5>
-        
-        <!-- Botonera de exportación -->
-        <div class="btn-group">
-            <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fas fa-download"></i> Exportar
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end">
-                <li>
-                    <a class="dropdown-item" href="<?php echo URL_BASE; ?>/public/registros.php?action=exportar&formato=pdf<?php echo $url_params; ?>" target="_blank">
-                        <i class="fas fa-file-pdf"></i> PDF
-                    </a>
-                </li>
-                <li>
-                    <a class="dropdown-item" href="<?php echo URL_BASE; ?>/public/registros.php?action=exportar&formato=excel<?php echo $url_params; ?>" target="_blank">
-                        <i class="fas fa-file-excel"></i> Excel
-                    </a>
-                </li>
-            </ul>
-        </div>
     </div>
     <div class="card-body">
+        <!-- Filtro rápido -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <input type="text" id="filtro-rapido" class="form-control" placeholder="Filtrar resultados..." data-table-filter="tabla-registros">
+                    <button class="btn btn-outline-secondary" type="button">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <!-- Tabla de registros -->
         <?php if (count($registros) > 0): ?>
         <div class="table-responsive">
-            <table class="table table-striped table-hover data-table" id="registrosTable">
+            <table class="table paginated-table table-striped table-hover" id="tabla-registros">
                 <thead>
                     <tr>
                         <th data-column="id">ID</th>
                         <th data-column="id_tarjeta">ID Tarjeta</th>
                         <th data-column="ubicacion_controlador">Ubicación</th>
+                        <th data-column="tipo_acceso_controlador">Tipo</th>
                         <th data-column="fecha_hora">Fecha/Hora</th>
                         <th data-column="acceso_permitido">Acceso</th>
                         <th class="text-center">Detalles</th>
@@ -107,6 +110,19 @@
                         <td><?php echo htmlspecialchars($registro['id']); ?></td>
                         <td><?php echo htmlspecialchars($registro['id_tarjeta']); ?></td>
                         <td><?php echo htmlspecialchars($registro['ubicacion_controlador']); ?></td>
+                        <td>
+                            <?php if (isset($registro['tipo_acceso_controlador'])): ?>
+                                <?php if (strtoupper($registro['tipo_acceso_controlador']) === 'ENTRADA'): ?>
+                                    <span class="badge bg-primary">Entrada</span>
+                                <?php elseif (strtoupper($registro['tipo_acceso_controlador']) === 'SALIDA'): ?>
+                                    <span class="badge bg-secondary">Salida</span>
+                                <?php else: ?>
+                                    <?php echo htmlspecialchars($registro['tipo_acceso_controlador']); ?>
+                                <?php endif; ?>
+                            <?php else: ?>
+                                <span class="text-muted">N/A</span>
+                            <?php endif; ?>
+                        </td>
                         <td><?php 
                             if (isset($registro['fecha_hora'])) {
                                 $fecha = new DateTime($registro['fecha_hora']);
@@ -116,7 +132,17 @@
                             }
                         ?></td>
                         <td>
-                            <?php if (isset($registro['acceso_permitido']) && $registro['acceso_permitido']): ?>
+                            <?php 
+                            // Comprobar si acceso_permitido existe y convertir a booleano si es necesario
+                            $permitido = false;
+                            if (isset($registro['acceso_permitido'])) {
+                                // Puede venir como booleano o como string '0'/'1'
+                                $permitido = is_bool($registro['acceso_permitido']) ? 
+                                    $registro['acceso_permitido'] : 
+                                    ($registro['acceso_permitido'] === true || $registro['acceso_permitido'] === '1' || $registro['acceso_permitido'] === 1);
+                            }
+                            
+                            if ($permitido): ?>
                             <span class="badge bg-success">Permitido</span>
                             <?php else: ?>
                             <span class="badge bg-danger">Denegado</span>

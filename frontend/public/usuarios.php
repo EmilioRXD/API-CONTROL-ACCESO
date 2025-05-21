@@ -287,40 +287,7 @@ switch ($action) {
         header('Location: ' . URL_BASE . '/public/usuarios.php');
         exit;
         
-    case 'activar':
-    case 'desactivar':
-        // Activar o desactivar usuario
-        $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
-        
-        if (!$id) {
-            $_SESSION['flash_message'] = 'ID de usuario no especificado.';
-            $_SESSION['flash_type'] = 'danger';
-            header('Location: ' . URL_BASE . '/public/usuarios.php');
-            exit;
-        }
-        
-        $activar = $action === 'activar';
-        
-        // Intentar cambiar el estado del usuario
-        $result = cambiarEstadoUsuario($id, $activar);
-        
-        if ($result) {
-            $_SESSION['flash_message'] = 'Usuario ' . ($activar ? 'activado' : 'desactivado') . ' correctamente.';
-            $_SESSION['flash_type'] = 'success';
-        } else {
-            $apiError = getApiError();
-            $_SESSION['flash_message'] = 'Error al ' . ($activar ? 'activar' : 'desactivar') . ' el usuario.';
-            
-            if ($apiError && isset($apiError['response']['detail'])) {
-                $_SESSION['flash_message'] .= ' ' . $apiError['response']['detail'];
-            }
-            
-            $_SESSION['flash_type'] = 'danger';
-        }
-        
-        // Redireccionar al listado
-        header('Location: ' . URL_BASE . '/public/usuarios.php');
-        exit;
+    // Los casos 'activar' y 'desactivar' fueron eliminados porque los usuarios no tienen estado
         
     default:
         // Acción desconocida, redirigir al listado
@@ -329,7 +296,7 @@ switch ($action) {
 }
 
 // Incluir la plantilla de pie de página
-if (!in_array($action, ['store', 'update', 'delete', 'activar', 'desactivar'])) {
+if (!in_array($action, ['store', 'update', 'delete'])) {
     require_once __DIR__ . '/../views/templates/footer.php';
 }
 ?>

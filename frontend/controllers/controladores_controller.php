@@ -7,21 +7,26 @@ require_once __DIR__ . '/../api/api_client.php';
  * 
  * @param int $skip Registros a omitir para paginación
  * @param int $limit Límite de registros a obtener
- * @param string $tipo Tipo de controlador (READER, WRITER, etc.)
+ * @param string $funcion Función del controlador (LECTOR, ESCRITOR, etc.)
  * @return array Lista de controladores
  */
-function getControladores($skip = 0, $limit = 100, $tipo = null) {
+function getControladores($skip = 0, $limit = 100, $funcion = null) {
     $api = new ApiClient();
     $params = [
         'skip' => $skip,
         'limit' => $limit
     ];
     
-    if ($tipo) {
-        $params['tipo'] = $tipo;
+    if ($funcion) {
+        $params['funcion'] = $funcion;
     }
     
     $controladores = $api->get('/controladores/', $params);
+    // Si es un objeto, convertir a array
+    if (is_object($controladores)) {
+        $controladores = [$controladores];
+    }
+    
     return $controladores ?: [];
 }
 

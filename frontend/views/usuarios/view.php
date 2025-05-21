@@ -15,13 +15,6 @@
                 <p><strong>Nombre:</strong> <?php echo htmlspecialchars($usuario['nombre']); ?></p>
                 <p><strong>Apellido:</strong> <?php echo htmlspecialchars($usuario['apellido']); ?></p>
                 <p><strong>Correo Electrónico:</strong> <?php echo htmlspecialchars($usuario['correo_electronico']); ?></p>
-                <p><strong>Estado:</strong> 
-                    <?php if (isset($usuario['activo']) && $usuario['activo']): ?>
-                    <span class="badge bg-success">Activo</span>
-                    <?php else: ?>
-                    <span class="badge bg-danger">Inactivo</span>
-                    <?php endif; ?>
-                </p>
             </div>
         </div>
         
