@@ -192,6 +192,13 @@ class Registro(RegistroBase):
     class Config:
         from_attributes = True
 
+class RegistroConControlador(Registro):
+    ubicacion_controlador: str
+    tipo_acceso_controlador: str
+    
+    class Config:
+        from_attributes = True
+
 class RegistroDetalle(Registro):
     tarjeta: Tarjeta
     controlador: Controlador
