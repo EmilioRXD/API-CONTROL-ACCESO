@@ -15,53 +15,57 @@ router = APIRouter(
 
 @router.post("/tarjeta", response_model=RespuestaValidacion)
 def validar_acceso_tarjeta(validacion: ValidacionTarjeta, db: Session = Depends(get_db)):
+    # Verificar primero si el controlador existe en el sistema
+    controlador = db.query(Controlador).filter(Controlador.mac == validacion.mac_controlador).first()
+    if not controlador:
+        return RespuestaValidacion(
+            acceso_permitido=0,  # Denegado
+            mensaje="Controlador no registrado en el sistema"
+        )
+        
     # Obtener la tarjeta por su serial
     tarjeta = db.query(Tarjeta).filter(Tarjeta.serial == validacion.serial).first()
     if not tarjeta:
         # No intentamos registrar en la base de datos para tarjetas desconocidas
         # ya que no hay un id_tarjeta válido para referenciar
         return RespuestaValidacion(
-            acceso_permitido=False,
+            acceso_permitido=0,  # Denegado
             mensaje="Tarjeta no encontrada en el sistema"
         )
     
     # Verificar si la tarjeta está activa
     if not tarjeta.activa:
-        # Registrar intento fallido
-        controlador = db.query(Controlador).filter(Controlador.mac == validacion.mac_controlador).first()
-        if controlador:
-            registro = Registro(
-                id_tarjeta=tarjeta.id,
-                id_controlador=controlador.id,
-                fecha_hora=datetime.now(),
-                acceso_permitido=False
-            )
-            db.add(registro)
-            db.commit()
-            db.refresh(registro)
+        # Registrar intento fallido (ya sabemos que el controlador existe)
+        registro = Registro(
+            id_tarjeta=tarjeta.id,
+            id_controlador=controlador.id,
+            fecha_hora=datetime.now(),
+            acceso_permitido=False
+        )
+        db.add(registro)
+        db.commit()
+        db.refresh(registro)
         
         return RespuestaValidacion(
-            acceso_permitido=False,
+            acceso_permitido=0,  # Denegado
             mensaje="Tarjeta inactiva"
         )
     
     # Verificar fecha de expiración
     if tarjeta.fecha_expiracion < datetime.now().date():
-        # Registrar intento fallido
-        controlador = db.query(Controlador).filter(Controlador.mac == validacion.mac_controlador).first()
-        if controlador:
-            registro = Registro(
-                id_tarjeta=tarjeta.id,
-                id_controlador=controlador.id,
-                fecha_hora=datetime.now(),
-                acceso_permitido=False
-            )
-            db.add(registro)
-            db.commit()
-            db.refresh(registro)
+        # Registrar intento fallido (ya sabemos que el controlador existe)
+        registro = Registro(
+            id_tarjeta=tarjeta.id,
+            id_controlador=controlador.id,
+            fecha_hora=datetime.now(),
+            acceso_permitido=False
+        )
+        db.add(registro)
+        db.commit()
+        db.refresh(registro)
         
         return RespuestaValidacion(
-            acceso_permitido=False,
+            acceso_permitido=0,  # Denegado
             mensaje="Tarjeta expirada"
         )
     
@@ -117,9 +121,62 @@ def validar_acceso_tarjeta(validacion: ValidacionTarjeta, db: Session = Depends(
         # Permite acceso porque son solo pendientes
     
     if not permitir_acceso:
-        # Registrar intento fallido
-        controlador = db.query(Controlador).filter(Controlador.mac == validacion.mac_controlador).first()
-        if controlador:
+        # Registrar intento fallido (ya sabemos que el controlador existe)
+        registro = Registro(
+            id_tarjeta=tarjeta.id,
+            id_controlador=controlador.id,
+            fecha_hora=datetime.now(),
+            acceso_permitido=False
+        )
+        db.add(registro)
+        db.commit()
+        db.refresh(registro)
+        
+        return RespuestaValidacion(
+            acceso_permitido=0,  # Denegado
+            mensaje=mensaje_denegacion
+        )
+    
+    # Verificar si el controlador es un LECTOR (ya sabemos que existe)
+    if controlador.funcion != "LECTOR":
+        return RespuestaValidacion(
+            acceso_permitido=0,  # Denegado
+            mensaje="Este controlador no tiene permiso para validar tarjetas (no es LECTOR)"
+        )
+    
+    # Verificar el último registro del estudiante para comprobar si puede entrar o salir
+    ultimo_registro_query = db.query(Registro, Controlador).join(
+        Tarjeta, Registro.id_tarjeta == Tarjeta.id
+    ).join(
+        Controlador, Registro.id_controlador == Controlador.id
+    ).filter(
+        Tarjeta.estudiante_cedula == estudiante_cedula,
+        Registro.acceso_permitido == True
+    ).order_by(
+        Registro.fecha_hora.desc()
+    ).first()
+    
+    ultimo_registro = ultimo_registro_query[0] if ultimo_registro_query else None
+    ultimo_controlador = ultimo_registro_query[1] if ultimo_registro_query else None
+    
+    # Verificar si el controlador actual es de entrada o salida
+    es_entrada = controlador.tipo_acceso == "ENTRADA"
+    es_salida = controlador.tipo_acceso == "SALIDA"
+    
+    # Si el controlador no tiene un tipo de acceso válido, mostrar error
+    if not (es_entrada or es_salida):
+        return RespuestaValidacion(
+            acceso_permitido=0,  # Denegado
+            mensaje=f"El controlador en '{controlador.ubicacion}' no tiene un tipo de acceso válido (ENTRADA/SALIDA)"
+        )
+    
+    if ultimo_registro and ultimo_registro.acceso_permitido and ultimo_controlador:
+        # Verificar el tipo del último controlador usado (entrada o salida)
+        ultimo_fue_entrada = ultimo_controlador.tipo_acceso == "ENTRADA"
+        
+        # Validar las reglas de acceso
+        if es_entrada and ultimo_fue_entrada:
+            # No puede entrar dos veces seguidas
             registro = Registro(
                 id_tarjeta=tarjeta.id,
                 id_controlador=controlador.id,
@@ -129,35 +186,46 @@ def validar_acceso_tarjeta(validacion: ValidacionTarjeta, db: Session = Depends(
             db.add(registro)
             db.commit()
             db.refresh(registro)
-        
-        return RespuestaValidacion(
-            acceso_permitido=False,
-            mensaje=mensaje_denegacion
-        )
-    
-    # Verificar si el controlador existe y es un LECTOR
-    controlador = db.query(Controlador).filter(
-        and_(
-            Controlador.mac == validacion.mac_controlador,
-            Controlador.funcion == "LECTOR"
-        )
-    ).first()
-    
-    if not controlador:
-        # Verificar si existe pero no es LECTOR
-        existe_controlador = db.query(Controlador).filter(Controlador.mac == validacion.mac_controlador).first()
-        
-        if existe_controlador:
-            mensaje = "Este controlador no tiene permiso para validar tarjetas (no es LECTOR)"
-        else:
-            mensaje = "Controlador no registrado en el sistema"
             
+            return RespuestaValidacion(
+                acceso_permitido=2,  # Doble intento de entrada
+                mensaje="No puede registrar entrada: ya se encuentra dentro de las instalaciones"
+            )
+        
+        elif es_salida and not ultimo_fue_entrada:
+            # No puede salir dos veces seguidas
+            registro = Registro(
+                id_tarjeta=tarjeta.id,
+                id_controlador=controlador.id,
+                fecha_hora=datetime.now(),
+                acceso_permitido=False
+            )
+            db.add(registro)
+            db.commit()
+            db.refresh(registro)
+            
+            return RespuestaValidacion(
+                acceso_permitido=2,  # Doble intento de salida
+                mensaje="No puede registrar salida: no ha registrado entrada previamente"
+            )
+    elif es_salida:
+        # Si no hay registros previos, no puede salir sin haber entrado
+        registro = Registro(
+            id_tarjeta=tarjeta.id,
+            id_controlador=controlador.id,
+            fecha_hora=datetime.now(),
+            acceso_permitido=False
+        )
+        db.add(registro)
+        db.commit()
+        db.refresh(registro)
+        
         return RespuestaValidacion(
-            acceso_permitido=False,
-            mensaje=mensaje
+            acceso_permitido=2,  # Intento de salida sin entrada previa
+            mensaje="No puede registrar salida: no hay registro de entrada previo"
         )
     
-    # Si todo está bien, registrar el acceso y permitir
+    # Si todas las validaciones son correctas, registrar el acceso
     registro = Registro(
         id_tarjeta=tarjeta.id,
         id_controlador=controlador.id,
@@ -173,7 +241,7 @@ def validar_acceso_tarjeta(validacion: ValidacionTarjeta, db: Session = Depends(
     nombre_completo = f"{estudiante.nombre} {estudiante.apellido}" if estudiante else "Estudiante"
     
     return RespuestaValidacion(
-        acceso_permitido=True,
+        acceso_permitido=1,  # Acceso permitido
         mensaje=f"Acceso permitido para {nombre_completo}"
     )
 

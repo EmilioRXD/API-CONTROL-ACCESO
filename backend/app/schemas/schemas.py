@@ -215,7 +215,7 @@ class ValidacionTarjeta(BaseModel):
     cedula_estudiante: int
 
 class RespuestaValidacion(BaseModel):
-    acceso_permitido: bool
+    acceso_permitido: int  # 0: Denegado, 1: Permitido, 2: Doble intento (entrada/salida repetida)
     mensaje: str
 
 # Asignación de tarjeta mediante MQTT
