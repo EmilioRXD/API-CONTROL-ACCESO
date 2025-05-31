@@ -20,8 +20,10 @@ El sistema está compuesto por los siguientes servicios:
 
 ## Requisitos
 
-- Docker Engine (versión 19.03.0+)
-- Docker Compose (versión 1.27.0+)
+- Python 3.8+
+- MySQL Server
+- MQTT Broker (Mosquitto)
+- Apache Web Server
 
 ## Instalación y Despliegue
 
@@ -32,36 +34,27 @@ git clone <url-del-repositorio>
 cd API-CONTROL-ACCESO
 ```
 
-### 2. Configuración (opcional)
+### 2. Configuración
 
 Los valores predeterminados deberían funcionar correctamente, pero puede personalizar la configuración editando:
 
-- **Variables de entorno**: Modificar los valores en el archivo `docker-compose.yml`
+- **Variables de entorno**: Crear un archivo `.env` basado en el ejemplo
 - **Configuración MQTT**: Archivos en `backend/mosquitto/config/`
 - **Configuración Apache**: Archivos en `backend/apache-conf/`
 
-### 3. Iniciar los servicios
-
-En el directorio principal del proyecto, ejecute:
+### 3. Instalar dependencias
 
 ```bash
-sudo docker compose up -d
+pip install -r requirements.txt
 ```
 
-Este comando:
-- Construirá las imágenes necesarias
-- Creará los contenedores
-- Iniciará todos los servicios en modo desconectado (background)
+### 4. Iniciar los servicios
 
-La primera vez que ejecute este comando, puede tomar varios minutos mientras descarga las imágenes base y compila los componentes.
-
-### 4. Verificar el estado de los servicios
-
-```bash
-sudo docker compose ps
-```
-
-Todos los servicios deberían estar en estado "Up". 
+Iniciar los servicios individualmente según su sistema operativo:
+- Iniciar MySQL
+- Iniciar el broker MQTT
+- Iniciar Apache
+- Iniciar la aplicación FastAPI
 
 ### 5. Acceder a los servicios
 
@@ -69,51 +62,7 @@ Todos los servicios deberían estar en estado "Up".
 - **Documentación API**: http://localhost:8090/docs
 - **Página principal**: http://localhost
 
-## Comandos útiles
 
-### Ver logs de todos los servicios
-
-```bash
-sudo docker compose logs
-```
-
-### Ver logs de un servicio específico
-
-```bash
-sudo docker compose logs [servicio]
-```
-
-Ejemplo:
-```bash
-sudo docker compose logs backend
-sudo docker compose logs mysql
-sudo docker compose logs mqtt
-sudo docker compose logs apache
-```
-
-### Seguir logs en tiempo real
-
-```bash
-sudo docker compose logs -f [servicio]
-```
-
-### Reiniciar un servicio específico
-
-```bash
-sudo docker compose restart [servicio]
-```
-
-### Detener todos los servicios
-
-```bash
-sudo docker compose down
-```
-
-### Detener y eliminar volúmenes (¡CUIDADO! Elimina datos)
-
-```bash
-sudo docker compose down -v
-```
 
 ## Estructura del proyecto
 
@@ -125,7 +74,6 @@ API-CONTROL-ACCESO/
 │   ├── docker-entrypoint-initdb.d/ # Scripts de inicialización de MySQL
 │   ├── mosquitto/               # Configuración del broker MQTT
 │   └── www/                     # Archivos web estáticos
-├── docker-compose.yml           # Configuración Docker Compose
 └── README.md                    # Este archivo
 ```
 
@@ -133,15 +81,13 @@ API-CONTROL-ACCESO/
 
 Para desplegar este sistema en un servidor de producción:
 
-1. Asegúrese de que el servidor tenga Docker y Docker Compose instalados
+1. Configure el servidor con los requisitos mencionados anteriormente
 2. Clone este repositorio en el servidor
-3. Modifique las variables de entorno en `docker-compose.yml` según sea necesario:
-   - Cambie las contraseñas predeterminadas
-   - Configure límites de recursos si es necesario
+3. Configure las variables de entorno según sea necesario
 4. Configure un dominio y SSL:
    - Modifique la configuración de Apache para usar un certificado SSL
    - Actualice los servidores virtuales de Apache según sea necesario
-5. Inicie los servicios con `sudo docker compose up -d`
+5. Inicie los servicios
 6. Configure un sistema de respaldo regular para los datos de MySQL
 
 ## Solución de problemas
@@ -150,24 +96,24 @@ Para desplegar este sistema en un servidor de producción:
 
 Si la aplicación no puede conectarse a MySQL:
 
-1. Verifique que MySQL esté activo: `sudo docker compose ps mysql`
-2. Compruebe los logs: `sudo docker compose logs mysql`
-3. Verifique que el usuario y contraseña en las variables de entorno sean correctos
+1. Verifique que MySQL esté activo
+2. Compruebe los logs del servicio MySQL
+3. Verifique que el usuario y contraseña sean correctos
 
 ### Problemas con el servidor MQTT
 
 Si los controladores ESP32 no se conectan al broker MQTT:
 
 1. Verifique que el puerto 1883 esté accesible desde la red
-2. Compruebe los logs: `sudo docker compose logs mqtt`
+2. Compruebe los logs del servicio MQTT
 3. Verifique la configuración MQTT en `backend/mosquitto/config/`
 
 ### Problemas con Apache
 
 Si el servidor web no responde:
 
-1. Verifique que Apache esté activo: `sudo docker compose ps apache`
-2. Compruebe los logs: `sudo docker compose logs apache`
+1. Verifique que Apache esté activo
+2. Compruebe los logs del servicio Apache
 3. Verifique que el puerto 80 no esté siendo utilizado por otro proceso
 
 ## Mantenimiento
@@ -176,17 +122,17 @@ Si el servidor web no responde:
 
 Para actualizar el sistema:
 
-1. Detenga los servicios: `sudo docker compose down`
+1. Detenga los servicios
 2. Actualice el código fuente: `git pull`
-3. Reconstruya las imágenes: `sudo docker compose build`
-4. Reinicie los servicios: `sudo docker compose up -d`
+3. Actualice las dependencias: `pip install -r requirements.txt`
+4. Reinicie los servicios
 
 ### Respaldos
 
 Para respaldar la base de datos:
 
 ```bash
-sudo docker compose exec mysql mysqldump -u root -p<password> control_acceso > backup.sql
+mysqldump -u root -p<password> control_acceso > backup.sql
 ```
 
 ## Desarrollo
@@ -194,9 +140,4 @@ sudo docker compose exec mysql mysqldump -u root -p<password> control_acceso > b
 Para desarrollar con este sistema:
 
 1. Modifique el código del backend en el directorio `backend/app/`
-2. Reconstruya la imagen del backend: `sudo docker compose build backend`
-3. Reinicie el servicio: `sudo docker compose restart backend`
-
-## Licencia
-
-[Incluir información de licencia aquí]
+2. Reinicie el servicio correspondiente según los cambios realizados
